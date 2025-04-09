@@ -1,0 +1,476 @@
+/* Optimized AboutPage.css */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', 'Roboto', 'Oxygen', sans-serif;
+}
+
+body {
+  line-height: 1.5;
+  color: #4a5568;
+  overflow-x: hidden;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+h1, h2, h3 {
+  color: #6ec007;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+p {
+  margin-bottom: 0.8rem;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.about-page {
+  overflow-x: hidden;
+}
+
+/* Hero Section - Reduced Height */
+.hero-section {
+  position: relative;
+  min-height: 45vh; /* Reduced from 60vh */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  padding: 50px 0; /* Reduced from 80px */
+}
+
+.background-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.background-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(2px); /* Slightly reduced blur */
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(110, 192, 7, 0.85), rgba(0, 0, 0, 0.75));
+}
+
+.hero-content {
+  max-width: 800px; /* Reduced from 900px */
+  margin: 0 auto;
+  padding: 30px; /* Reduced from 40px */
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.hero-content:hover {
+  transform: translateY(-5px);
+}
+
+.hero-content h1 {
+  font-size: 3rem; /* Reduced from 3.5rem */
+  margin-bottom: 12px; /* Reduced from 15px */
+  color: white;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.hero-content .subtitle {
+  font-size: 1.3rem; /* Reduced from 1.5rem */
+  margin-bottom: 15px; /* Reduced from 20px */
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.divider {
+  width: 60px; /* Reduced from 80px */
+  height: 3px;
+  background-color: #6ec007;
+  margin: 15px auto; /* Reduced from 20px */
+}
+
+/* Introduction Section - More compact */
+.intro-section {
+  padding: 70px 0; /* Reduced from 100px */
+  background-color: white;
+}
+
+.intro-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px; /* Reduced from 50px */
+}
+
+.intro-content {
+  flex: 1;
+}
+
+.intro-content h2 {
+  font-size: 2.2rem; /* Reduced from 2.5rem */
+  margin-bottom: 20px; /* Reduced from 25px */
+  position: relative;
+}
+
+.intro-content h2:after {
+  content: '';
+  position: absolute;
+  bottom: -8px; /* Reduced from -10px */
+  left: 0;
+  width: 50px; /* Reduced from 60px */
+  height: 3px;
+  background-color: #6ec007;
+}
+
+.intro-image {
+  flex: 1;
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  max-height: 300px; /* Added max-height */
+}
+
+.intro-image img {
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.intro-image:hover img {
+  transform: scale(1.05);
+}
+
+.image-accent {
+  position: absolute;
+  top: -8px; /* Reduced from -10px */
+  right: -8px; /* Reduced from -10px */
+  width: 100%;
+  height: 100%;
+  border: 3px solid #6ec007;
+  border-radius: 10px;
+  z-index: -1;
+}
+
+/* Education Section - More compact */
+.education-section {
+  padding: 70px 0; /* Reduced from 100px */
+  background-color: white;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 40px; /* Reduced from 60px */
+}
+
+.section-header h2 {
+  font-size: 2.2rem; /* Reduced from 2.5rem */
+  margin-bottom: 10px; /* Reduced from 15px */
+}
+
+.education-content {
+  display: flex;
+  gap: 30px; /* Further reduced from 40px */
+  align-items: center;
+}
+
+.education-image {
+  flex: 0.8; /* Reduced from 1 to make image smaller */
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  max-height: 240px; /* Reduced from 300px */
+  max-width: 90%; /* Added max-width */
+}
+
+.education-image img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.education-image:hover img {
+  transform: scale(1.05);
+}
+
+.education-text {
+  flex: 1.2; /* Increased from 1 to give more space to text */
+}
+
+/* Learning Path Section - More visually appealing */
+.learning-path-section {
+  padding: 70px 0; /* Reduced from 100px */
+  background-color: #f8faf5;
+}
+
+.levels-container {
+  display: flex;
+  flex-direction: column;
+  gap: 30px; /* Reduced from 50px */
+}
+
+.level-card {
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  display: flex;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.level-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+.level-image {
+  width: 35%;
+  position: relative;
+  overflow: hidden;
+  max-height: 270px; /* Added max-height */
+}
+
+.level-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.level-card:hover .level-image img {
+  transform: scale(1.08);
+}
+
+.level-badge {
+  position: absolute;
+  top: 15px; /* Reduced from 20px */
+  right: 15px; /* Reduced from 20px */
+  background: linear-gradient(135deg, #6ec007, #8fd619);
+  color: white;
+  padding: 6px 12px; /* Reduced from 8px 15px */
+  border-radius: 25px; /* Reduced from 30px */
+  font-weight: bold;
+  font-size: 0.85rem; /* Reduced from 0.9rem */
+  box-shadow: 0 5px 15px rgba(110, 192, 7, 0.3);
+}
+
+.level-content {
+  width: 65%;
+  padding: 25px; /* Reduced from 30px */
+}
+
+.level-content h3 {
+  font-size: 1.6rem; /* Reduced from 1.8rem */
+  margin-bottom: 10px; /* Reduced from 15px */
+}
+
+.level-features {
+  list-style-type: none;
+  margin: 15px 0; /* Reduced from 20px */
+}
+
+.level-features li {
+  margin-bottom: 8px; /* Reduced from 10px */
+  display: flex;
+  align-items: center;
+}
+
+.level-features li span {
+  color: #6ec007;
+  font-weight: bold;
+  margin-right: 8px; /* Reduced from 10px */
+}
+
+.level-action {
+  margin-top: 15px; /* Reduced from 20px */
+}
+
+.btn-level {
+  display: inline-block;
+  background: linear-gradient(to right, #6ec007, #8fd619);
+  color: white;
+  border: none;
+  padding: 10px 22px; /* Reduced from 12px 25px */
+  border-radius: 25px; /* Reduced from 30px */
+  font-weight: 600;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.btn-level:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(110, 192, 7, 0.3);
+}
+
+/* CTA Section - More impactful */
+.cta-section {
+  padding: 60px 0; /* Reduced from 80px */
+  background: linear-gradient(135deg, rgba(110, 192, 7, 0.85), rgba(110, 192, 7, 0.65)), url('../assets/cta-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  color: white;
+  text-align: center;
+  position: relative;
+}
+
+.cta-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.2) 100%);
+}
+
+.cta-content {
+  position: relative;
+  z-index: 1;
+}
+
+.cta-content h2 {
+  font-size: 2.2rem; /* Reduced from 2.5rem */
+  color: white;
+  margin-bottom: 25px; /* Reduced from 30px */
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.cta-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.btn-primary {
+  display: inline-block;
+  background: white;
+  color: #6ec007;
+  padding: 12px 25px; /* Reduced from 12px 30px */
+  border-radius: 25px; /* Reduced from 30px */
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.btn-secondary {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  padding: 11px 25px; /* Reduced from 12px 30px */
+  border-radius: 25px; /* Reduced from 30px */
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: 2px solid white;
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-3px);
+}
+
+/* Responsive Styles - Optimized */
+@media (max-width: 992px) {
+  .intro-wrapper, 
+  .education-content {
+    flex-direction: column;
+  }
+  
+  .intro-image, 
+  .education-image {
+    margin-top: 25px; /* Reduced from 30px */
+    max-width: 100%; /* Ensure image fits container on smaller screens */
+  }
+  
+  .hero-content h1 {
+    font-size: 2.5rem; /* Reduced from 2.8rem */
+  }
+}
+
+@media (max-width: 768px) {
+  .level-card {
+    flex-direction: column;
+  }
+  
+  .level-image,
+  .level-content {
+    width: 100%;
+  }
+  
+  .level-image {
+    max-height: 200px;
+  }
+  
+  .hero-content {
+    padding: 25px 20px; /* Reduced from 30px 20px */
+  }
+  
+  .hero-content h1 {
+    font-size: 2rem; /* Reduced from 2.3rem */
+  }
+  
+  .hero-content .subtitle {
+    font-size: 1.1rem; /* Reduced from 1.2rem */
+  }
+  
+  .cta-buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px; /* Reduced from 20px */
+  }
+  
+  .btn-primary, .btn-secondary {
+    width: 80%;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-header h2,
+  .intro-content h2,
+  .cta-content h2 {
+    font-size: 1.8rem; /* Reduced from 2rem */
+  }
+  
+  .hero-content h1 {
+    font-size: 1.6rem; /* Reduced from 1.8rem */
+  }
+  
+  .intro-section,
+  .education-section,
+  .learning-path-section {
+    padding: 50px 0; /* Reduced from 60px */
+  }
+}
