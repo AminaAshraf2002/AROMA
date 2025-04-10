@@ -11,6 +11,7 @@ import ingredientsImage from '../assets/img1.jpg';
 import levelOneImage from '../assets/img1.jpg';
 import levelTwoImage from '../assets/img1.jpg';
 import levelThreeImage from '../assets/img1.jpg';
+import logoImage from '../assets/AROMA.png'; // Add your logo path here
 import './AboutPage.css';
 
 const AboutPage = () => {
@@ -29,9 +30,31 @@ const AboutPage = () => {
         navigate('/payment');
     };
 
+    const handleEnrollNow = () => {
+        navigate('/payment');
+    };
+
     return (
         <div className="about-page">
-            {/* Shorter Hero section */}
+            {/* Header Section with Logo and Navigation */}
+            <header className="site-header">
+                <div className="container">
+                    <div className="header-content">
+                        <div className="logo">
+                            <img src={logoImage} alt="Aroma Research Centre Logo" />
+                            <span>AROMA RESEARCH</span>
+                        </div>
+                        <nav className="main-nav">
+                            <ul>
+                                <li><a href="/about" className="nav-link active">Home</a></li>
+                                <li><a href="/about-detailed" className="nav-link">About</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+
+            {/* Enhanced Hero section with course info */}
             <section className="hero-section">
                 <div className="background-container">
                     <img src={backgroundImg} alt="" className="background-image" />
@@ -42,6 +65,34 @@ const AboutPage = () => {
                         <h1>AROMA RESEARCH CENTRE</h1>
                         <p className="subtitle">Where Science Meets the Art of Fragrance</p>
                         <div className="divider"></div>
+                        
+                        {/* Course and Level Information */}
+                        <div className="course-banner">
+                            <div className="course-info">
+                                <h3>Perfumery Fundamentals</h3>
+                                <p>Master the art and science of creating captivating fragrances</p>
+                                <div className="course-details">
+                                    <div className="course-detail">
+                                        <BookOpen size={16} />
+                                        <span>Level 1 Course</span>
+                                    </div>
+                                    <div className="course-detail">
+                                        <Droplet size={16} />
+                                        <span>50 Questions</span>
+                                    </div>
+                                    <div className="course-detail">
+                                        <Leaf size={16} />
+                                        <span>Certificate Included</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button 
+                                onClick={handleEnrollNow} 
+                                className="btn-enroll"
+                            >
+                                Enroll Now
+                            </button>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -128,62 +179,20 @@ const AboutPage = () => {
                                 </div>
                             </div>
                         </div>
-
-                        {/* <div className="level-card" data-aos="fade-up">
-                            <div className="level-image">
-                                <img src={levelTwoImage} alt="Level 2" />
-                                <div className="level-badge">LEVEL 2</div>
-                            </div>
-                            <div className="level-content">
-                                <h3>Advanced Techniques</h3>
-                                <p>
-                                    Elevate your skills with sophisticated composition methods and materials.
-                                </p>
-                                <ul className="level-features">
-                                    <li><span>✓</span> Complex accord creation</li>
-                                    <li><span>✓</span> Fragrance pyramid mastery</li>
-                                </ul>
-                                <div className="level-action">
-                                    <a href="#" className="btn-level">Explore</a>
-                                </div>
-                            </div>
-                        </div> */}
-
-                        {/* <div className="level-card" data-aos="fade-up">
-                            <div className="level-image">
-                                <img src={levelThreeImage} alt="Level 3" />
-                                <div className="level-badge">LEVEL 3</div>
-                            </div>
-                            <div className="level-content">
-                                <h3>Master Perfumer</h3>
-                                <p>
-                                    Achieve professional expertise and develop your signature creations.
-                                </p>
-                                <ul className="level-features">
-                                    <li><span>✓</span> Professional formulation</li>
-                                    <li><span>✓</span> Market-ready compositions</li>
-                                </ul>
-                                <div className="level-action">
-                                    <a href="#" className="btn-level">Discover</a>
-                                </div>
-                            </div>
-                        </div> */}
                     </div>
                 </div>
             </section>
-
-            {/* Dynamic CTA section */}
-            {/* <section className="cta-section">
+             <section className="cta-section">
                 <div className="container">
                     <div className="cta-content" data-aos="zoom-in">
                         <h2>Begin Your Perfumery Journey</h2>
                         <div className="cta-buttons">
-                            <a href="#" className="btn-primary">Enroll Today</a>
-                            <a href="#" className="btn-secondary">Contact Us</a>
+                            <a href="#" className="btn-primary">Contact Now</a>
+                          
                         </div>
                     </div>
                 </div>
-            </section> */}
+            </section> 
         </div>
     );
 };

@@ -1,4 +1,4 @@
-/* Optimized AboutPage.css */
+/* Optimized AboutPage.css with Header and Course Banner */
 * {
   margin: 0;
   padding: 0;
@@ -42,16 +42,87 @@ p {
   overflow-x: hidden;
 }
 
-/* Hero Section - Reduced Height */
+/* Header Styles - New Section */
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  padding: 15px 0;
+  backdrop-filter: blur(10px);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo img {
+  height: 40px;
+  margin-right: 10px;
+}
+
+.logo span {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #6ec007;
+  letter-spacing: 0.5px;
+}
+
+.main-nav ul {
+  display: flex;
+  list-style: none;
+  gap: 25px;
+}
+
+.nav-link {
+  color: #4a5568;
+  font-weight: 600;
+  padding: 8px 12px;
+  position: relative;
+}
+
+.nav-link:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #6ec007;
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: #6ec007;
+}
+
+.nav-link:hover:after,
+.nav-link.active:after {
+  width: 100%;
+}
+
+/* Hero Section - Adjusted for header height */
 .hero-section {
   position: relative;
-  min-height: 45vh; /* Reduced from 60vh */
+  min-height: 45vh;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   color: white;
-  padding: 50px 0; /* Reduced from 80px */
+  padding: 80px 0 50px; /* Increased top padding to account for fixed header */
+  margin-top: 70px; /* Add margin to account for fixed header */
 }
 
 .background-container {
@@ -67,7 +138,7 @@ p {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: blur(2px); /* Slightly reduced blur */
+  filter: blur(2px);
 }
 
 .overlay {
@@ -80,9 +151,9 @@ p {
 }
 
 .hero-content {
-  max-width: 800px; /* Reduced from 900px */
+  max-width: 800px;
   margin: 0 auto;
-  padding: 30px; /* Reduced from 40px */
+  padding: 30px;
   background-color: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   border-radius: 15px;
@@ -97,28 +168,95 @@ p {
 }
 
 .hero-content h1 {
-  font-size: 3rem; /* Reduced from 3.5rem */
-  margin-bottom: 12px; /* Reduced from 15px */
+  font-size: 3rem;
+  margin-bottom: 12px;
   color: white;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 .hero-content .subtitle {
-  font-size: 1.3rem; /* Reduced from 1.5rem */
-  margin-bottom: 15px; /* Reduced from 20px */
+  font-size: 1.3rem;
+  margin-bottom: 15px;
   color: rgba(255, 255, 255, 0.95);
 }
 
 .divider {
-  width: 60px; /* Reduced from 80px */
+  width: 60px;
   height: 3px;
   background-color: #6ec007;
-  margin: 15px auto; /* Reduced from 20px */
+  margin: 15px auto;
 }
 
-/* Introduction Section - More compact */
+/* Course Banner - New Section */
+.course-banner {
+  margin-top: 20px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  text-align: left;
+  border-left: 4px solid #6ec007;
+}
+
+.course-info {
+  flex: 1;
+  min-width: 250px;
+}
+
+.course-info h3 {
+  color: white;
+  font-size: 1.4rem;
+  margin-bottom: 8px;
+}
+
+.course-info p {
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 12px;
+}
+
+.course-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.course-detail {
+  display: flex;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+}
+
+.course-detail svg {
+  margin-right: 5px;
+  color: #6ec007;
+}
+
+.btn-enroll {
+  background: #6ec007;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.btn-enroll:hover {
+  background: #5da006;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Introduction Section */
 .intro-section {
-  padding: 70px 0; /* Reduced from 100px */
+  padding: 70px 0;
   background-color: white;
 }
 
@@ -126,7 +264,7 @@ p {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 40px; /* Reduced from 50px */
+  gap: 40px;
 }
 
 .intro-content {
@@ -134,17 +272,17 @@ p {
 }
 
 .intro-content h2 {
-  font-size: 2.2rem; /* Reduced from 2.5rem */
-  margin-bottom: 20px; /* Reduced from 25px */
+  font-size: 2.2rem;
+  margin-bottom: 20px;
   position: relative;
 }
 
 .intro-content h2:after {
   content: '';
   position: absolute;
-  bottom: -8px; /* Reduced from -10px */
+  bottom: -8px;
   left: 0;
-  width: 50px; /* Reduced from 60px */
+  width: 50px;
   height: 3px;
   background-color: #6ec007;
 }
@@ -155,7 +293,7 @@ p {
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-  max-height: 300px; /* Added max-height */
+  max-height: 300px;
 }
 
 .intro-image img {
@@ -170,8 +308,8 @@ p {
 
 .image-accent {
   position: absolute;
-  top: -8px; /* Reduced from -10px */
-  right: -8px; /* Reduced from -10px */
+  top: -8px;
+  right: -8px;
   width: 100%;
   height: 100%;
   border: 3px solid #6ec007;
@@ -179,36 +317,36 @@ p {
   z-index: -1;
 }
 
-/* Education Section - More compact */
+/* Education Section */
 .education-section {
-  padding: 70px 0; /* Reduced from 100px */
+  padding: 70px 0;
   background-color: white;
 }
 
 .section-header {
   text-align: center;
-  margin-bottom: 40px; /* Reduced from 60px */
+  margin-bottom: 40px;
 }
 
 .section-header h2 {
-  font-size: 2.2rem; /* Reduced from 2.5rem */
-  margin-bottom: 10px; /* Reduced from 15px */
+  font-size: 2.2rem;
+  margin-bottom: 10px;
 }
 
 .education-content {
   display: flex;
-  gap: 30px; /* Further reduced from 40px */
+  gap: 30px;
   align-items: center;
 }
 
 .education-image {
-  flex: 0.8; /* Reduced from 1 to make image smaller */
+  flex: 0.8;
   position: relative;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-  max-height: 240px; /* Reduced from 300px */
-  max-width: 90%; /* Added max-width */
+  max-height: 240px;
+  max-width: 90%;
 }
 
 .education-image img {
@@ -223,19 +361,19 @@ p {
 }
 
 .education-text {
-  flex: 1.2; /* Increased from 1 to give more space to text */
+  flex: 1.2;
 }
 
-/* Learning Path Section - More visually appealing */
+/* Learning Path Section */
 .learning-path-section {
-  padding: 70px 0; /* Reduced from 100px */
+  padding: 70px 0;
   background-color: #f8faf5;
 }
 
 .levels-container {
   display: flex;
   flex-direction: column;
-  gap: 30px; /* Reduced from 50px */
+  gap: 30px;
 }
 
 .level-card {
@@ -256,7 +394,7 @@ p {
   width: 35%;
   position: relative;
   overflow: hidden;
-  max-height: 270px; /* Added max-height */
+  max-height: 270px;
 }
 
 .level-image img {
@@ -272,34 +410,34 @@ p {
 
 .level-badge {
   position: absolute;
-  top: 15px; /* Reduced from 20px */
-  right: 15px; /* Reduced from 20px */
+  top: 15px;
+  right: 15px;
   background: linear-gradient(135deg, #6ec007, #8fd619);
   color: white;
-  padding: 6px 12px; /* Reduced from 8px 15px */
-  border-radius: 25px; /* Reduced from 30px */
+  padding: 6px 12px;
+  border-radius: 25px;
   font-weight: bold;
-  font-size: 0.85rem; /* Reduced from 0.9rem */
+  font-size: 0.85rem;
   box-shadow: 0 5px 15px rgba(110, 192, 7, 0.3);
 }
 
 .level-content {
   width: 65%;
-  padding: 25px; /* Reduced from 30px */
+  padding: 25px;
 }
 
 .level-content h3 {
-  font-size: 1.6rem; /* Reduced from 1.8rem */
-  margin-bottom: 10px; /* Reduced from 15px */
+  font-size: 1.6rem;
+  margin-bottom: 10px;
 }
 
 .level-features {
   list-style-type: none;
-  margin: 15px 0; /* Reduced from 20px */
+  margin: 15px 0;
 }
 
 .level-features li {
-  margin-bottom: 8px; /* Reduced from 10px */
+  margin-bottom: 8px;
   display: flex;
   align-items: center;
 }
@@ -307,11 +445,11 @@ p {
 .level-features li span {
   color: #6ec007;
   font-weight: bold;
-  margin-right: 8px; /* Reduced from 10px */
+  margin-right: 8px;
 }
 
 .level-action {
-  margin-top: 15px; /* Reduced from 20px */
+  margin-top: 15px;
 }
 
 .btn-level {
@@ -319,8 +457,8 @@ p {
   background: linear-gradient(to right, #6ec007, #8fd619);
   color: white;
   border: none;
-  padding: 10px 22px; /* Reduced from 12px 25px */
-  border-radius: 25px; /* Reduced from 30px */
+  padding: 10px 22px;
+  border-radius: 25px;
   font-weight: 600;
   transition: all 0.3s ease;
   cursor: pointer;
@@ -331,9 +469,105 @@ p {
   box-shadow: 0 8px 20px rgba(110, 192, 7, 0.3);
 }
 
+/* Responsive Styles */
+@media (max-width: 992px) {
+  .intro-wrapper, 
+  .education-content {
+    flex-direction: column;
+  }
+  
+  .intro-image, 
+  .education-image {
+    margin-top: 25px;
+    max-width: 100%;
+  }
+  
+  .hero-content h1 {
+    font-size: 2.5rem;
+  }
+  
+  .course-banner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .btn-enroll {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-content {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .main-nav ul {
+    gap: 15px;
+  }
+  
+  .hero-section {
+    margin-top: 120px; /* Increased for stacked header */
+  }
+  
+  .level-card {
+    flex-direction: column;
+  }
+  
+  .level-image,
+  .level-content {
+    width: 100%;
+  }
+  
+  .level-image {
+    max-height: 200px;
+  }
+  
+  .hero-content {
+    padding: 25px 20px;
+  }
+  
+  .hero-content h1 {
+    font-size: 2rem;
+  }
+  
+  .hero-content .subtitle {
+    font-size: 1.1rem;
+  }
+  
+  .course-details {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-nav ul {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .section-header h2,
+  .intro-content h2,
+  .cta-content h2 {
+    font-size: 1.8rem;
+  }
+  
+  .hero-content h1 {
+    font-size: 1.6rem;
+  }
+  
+  .intro-section,
+  .education-section,
+  .learning-path-section {
+    padding: 50px 0;
+  }
+}
 /* CTA Section - More impactful */
+/* CTA Section - Responsive Version */
 .cta-section {
-  padding: 60px 0; /* Reduced from 80px */
+  padding: 60px 20px; /* Added horizontal padding */
   background: linear-gradient(135deg, rgba(110, 192, 7, 0.85), rgba(110, 192, 7, 0.65)), url('../assets/cta-bg.jpg');
   background-size: cover;
   background-position: center;
@@ -355,30 +589,35 @@ p {
 .cta-content {
   position: relative;
   z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .cta-content h2 {
-  font-size: 2.2rem; /* Reduced from 2.5rem */
+  font-size: 2.2rem;
   color: white;
-  margin-bottom: 25px; /* Reduced from 30px */
+  margin-bottom: 25px;
   text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  line-height: 1.3;
 }
 
 .cta-buttons {
   display: flex;
   justify-content: center;
   gap: 20px;
+  flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
 }
 
 .btn-primary {
   display: inline-block;
   background: white;
   color: #6ec007;
-  padding: 12px 25px; /* Reduced from 12px 30px */
-  border-radius: 25px; /* Reduced from 30px */
+  padding: 12px 25px;
+  border-radius: 25px;
   font-weight: 600;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  text-decoration: none;
 }
 
 .btn-primary:hover {
@@ -390,11 +629,12 @@ p {
   display: inline-block;
   background: rgba(255, 255, 255, 0.15);
   color: white;
-  padding: 11px 25px; /* Reduced from 12px 30px */
-  border-radius: 25px; /* Reduced from 30px */
+  padding: 11px 25px;
+  border-radius: 25px;
   font-weight: 600;
   transition: all 0.3s ease;
   border: 2px solid white;
+  text-decoration: none;
 }
 
 .btn-secondary:hover {
@@ -402,75 +642,47 @@ p {
   transform: translateY(-3px);
 }
 
-/* Responsive Styles - Optimized */
-@media (max-width: 992px) {
-  .intro-wrapper, 
-  .education-content {
-    flex-direction: column;
-  }
-  
-  .intro-image, 
-  .education-image {
-    margin-top: 25px; /* Reduced from 30px */
-    max-width: 100%; /* Ensure image fits container on smaller screens */
-  }
-  
-  .hero-content h1 {
-    font-size: 2.5rem; /* Reduced from 2.8rem */
-  }
-}
-
+/* Media Queries for Responsiveness */
 @media (max-width: 768px) {
-  .level-card {
-    flex-direction: column;
+  .cta-section {
+    padding: 50px 15px;
   }
   
-  .level-image,
-  .level-content {
-    width: 100%;
-  }
-  
-  .level-image {
-    max-height: 200px;
-  }
-  
-  .hero-content {
-    padding: 25px 20px; /* Reduced from 30px 20px */
-  }
-  
-  .hero-content h1 {
-    font-size: 2rem; /* Reduced from 2.3rem */
-  }
-  
-  .hero-content .subtitle {
-    font-size: 1.1rem; /* Reduced from 1.2rem */
+  .cta-content h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
   }
   
   .cta-buttons {
-    flex-direction: column;
-    align-items: center;
-    gap: 15px; /* Reduced from 20px */
+    gap: 15px;
   }
   
   .btn-primary, .btn-secondary {
-    width: 80%;
+    padding: 10px 20px;
   }
 }
 
 @media (max-width: 480px) {
-  .section-header h2,
-  .intro-content h2,
+  .cta-section {
+    padding: 40px 10px;
+  }
+  
   .cta-content h2 {
-    font-size: 1.8rem; /* Reduced from 2rem */
+    font-size: 1.5rem;
+    margin-bottom: 15px;
   }
   
-  .hero-content h1 {
-    font-size: 1.6rem; /* Reduced from 1.8rem */
+  .cta-buttons {
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 280px;
+    margin: 0 auto;
   }
   
-  .intro-section,
-  .education-section,
-  .learning-path-section {
-    padding: 50px 0; /* Reduced from 60px */
+  .btn-primary, .btn-secondary {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 0.95rem;
   }
 }
