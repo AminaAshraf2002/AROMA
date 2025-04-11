@@ -110,7 +110,6 @@ const AboutPage = () => {
                                 preserving traditional knowledge while pioneering sustainable practices for 
                                 the future of perfumery.
                             </p>
-                            <Link to="/about-detailed" className="btn-learn-more">Learn More</Link>
                         </div>
                         <div className="intro-image" data-aos="fade-left">
                             <img src={labImage} alt="Aroma Research Laboratory" />
