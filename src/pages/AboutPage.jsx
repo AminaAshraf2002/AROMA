@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { Droplet, Leaf, BookOpen } from 'lucide-react';
@@ -9,9 +9,7 @@ import backgroundImg from '../assets/image.jpeg';
 import labImage from '../assets/img.jpeg';
 import ingredientsImage from '../assets/img1.jpg';
 import levelOneImage from '../assets/img1.jpg';
-import levelTwoImage from '../assets/img1.jpg';
-import levelThreeImage from '../assets/img1.jpg';
-import logoImage from '../assets/AROMA.png'; // Add your logo path here
+import logoImage from '../assets/AROMA.png';
 import './AboutPage.css';
 
 const AboutPage = () => {
@@ -19,11 +17,14 @@ const AboutPage = () => {
 
     useEffect(() => {
         AOS.init({
-            duration: 800, // Reduced duration for faster animations
+            duration: 800,
             once: false,
             mirror: true,
             easing: 'ease-out',
         });
+        
+        // Scroll to top on component mount
+        window.scrollTo(0, 0);
     }, []);
 
     const handleLevelOnePayment = () => {
@@ -46,8 +47,8 @@ const AboutPage = () => {
                         </div>
                         <nav className="main-nav">
                             <ul>
-                                <li><a href="/about" className="nav-link active">Home</a></li>
-                                <li><a href="/about-detailed" className="nav-link">About</a></li>
+                                <li><Link to="/about" className="nav-link active">Home</Link></li>
+                                <li><Link to="/about-detailed" className="nav-link">About</Link></li>
                             </ul>
                         </nav>
                     </div>
@@ -109,6 +110,7 @@ const AboutPage = () => {
                                 preserving traditional knowledge while pioneering sustainable practices for 
                                 the future of perfumery.
                             </p>
+                            <Link to="/about-detailed" className="btn-learn-more">Learn More</Link>
                         </div>
                         <div className="intro-image" data-aos="fade-left">
                             <img src={labImage} alt="Aroma Research Laboratory" />
@@ -182,17 +184,19 @@ const AboutPage = () => {
                     </div>
                 </div>
             </section>
-             <section className="cta-section">
+            
+            {/* CTA Section */}
+            <section className="cta-section">
                 <div className="container">
                     <div className="cta-content" data-aos="zoom-in">
                         <h2>Begin Your Perfumery Journey</h2>
                         <div className="cta-buttons">
-                            <a href="#" className="btn-primary">Contact Now</a>
-                          
+                            <Link to="/contact" className="btn-primary">Contact Now</Link>
+                            <Link to="/about-detailed" className="btn-secondary">Learn More</Link>
                         </div>
                     </div>
                 </div>
-            </section> 
+            </section>
         </div>
     );
 };

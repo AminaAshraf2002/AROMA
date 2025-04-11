@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import { Droplet, Leaf, BookOpen, Users, Beaker, Award, Globe, Zap } from 'lucide-react';
@@ -46,8 +46,8 @@ const AboutDetailedPage = () => {
                         </div>
                         <nav className="main-nav">
                             <ul>
-                                <li><a href="/about" className="nav-link active">Home</a></li>
-                                <li><a href="/about-detailed" className="nav-link">About</a></li>
+                                <li><Link to="/about" className="nav-link">Home</Link></li>
+                                <li><Link to="/about-detailed" className="nav-link active">About</Link></li>
                             </ul>
                         </nav>
                     </div>
@@ -506,7 +506,7 @@ const AboutDetailedPage = () => {
                         <p>Begin your journey into the fascinating world of perfumery with the AROMA RESEARCH CENTRE</p>
                         <div className="cta-buttons">
                             <button onClick={handleEnrollNow} className="btn-primary">Enroll Now</button>
-                            <a href="/about-detailed" className="btn-secondary">Contact Us</a>
+                            <Link to="/contact" className="btn-secondary">Contact Us</Link>
                         </div>
                     </div>
                 </div>
