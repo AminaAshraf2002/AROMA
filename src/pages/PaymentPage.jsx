@@ -67,9 +67,9 @@ const PaymentPage = () => {
                   <div className="course-image"></div>
                 </div>
                 <div className="course-info">
-                  <h3>Aroma Institute - LEVEL 1</h3>
+                  <h3> Perfumery learning - Entrance Level 1 
+                  </h3>
                   <ul className="course-features">
-                    <li><CheckCircle size={16} /> Lifetime access to course materials</li>
                     <li><CheckCircle size={16} /> 50 comprehensive quiz questions</li>
                     <li><CheckCircle size={16} /> Digital certification upon completion</li>
                     <li><CheckCircle size={16} /> Access to Level 2 upon passing</li>
