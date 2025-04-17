@@ -184,7 +184,7 @@ const AboutPage = () => {
                 </div>
             </section>
             
-            {/* CTA Section */}
+            {/* CTA Section with Copyright */}
             <section className="cta-section">
                 <div className="container">
                     <div className="cta-content" data-aos="zoom-in">
@@ -192,6 +192,16 @@ const AboutPage = () => {
                         <div className="cta-buttons">
                             <Link to="/contact" className="btn-primary">Contact Now</Link>
                             <Link to="/about-detailed" className="btn-secondary">Learn More</Link>
+                        </div>
+                        
+                        {/* Copyright Information */}
+                        <div className="copyright-container">
+                            <div className="copyright">
+                                © 2025 AROMA RESEARCH CENTRE. All Rights Reserved
+                            </div>
+                            <div className="powered-by">
+                                Powered by <a href="https://www.inspitetech.com/index.html#" target="_blank" rel="noopener noreferrer">Inspite Technologies</a>
+                            </div>
                         </div>
                     </div>
                 </div>
