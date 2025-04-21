@@ -7,8 +7,8 @@ import { Droplet, Leaf, BookOpen } from 'lucide-react';
 // Image imports
 import backgroundImg from '../assets/image.jpeg';
 import labImage from '../assets/img.jpeg';
-import ingredientsImage from '../assets/img1.jpg';
-import levelOneImage from '../assets/img1.jpg';
+import ingredientsImage from '../assets/spray.jpeg';
+import levelOneImage from '../assets/institute7.jpeg';
 import logoImage from '../assets/AROMA.png';
 import './AboutPage.css';
 
@@ -22,7 +22,7 @@ const AboutPage = () => {
             mirror: true,
             easing: 'ease-out',
         });
-        
+
         // Scroll to top on component mount
         window.scrollTo(0, 0);
     }, []);
@@ -66,7 +66,7 @@ const AboutPage = () => {
                         <h1>AROMA RESEARCH CENTRE</h1>
                         <p className="subtitle">Where Science Meets the Art of Fragrance</p>
                         <div className="divider"></div>
-                        
+
                         {/* Course and Level Information */}
                         <div className="course-banner">
                             <div className="course-info">
@@ -87,8 +87,8 @@ const AboutPage = () => {
                                     </div>
                                 </div>
                             </div>
-                            <button 
-                                onClick={handleEnrollNow} 
+                            <button
+                                onClick={handleEnrollNow}
                                 className="btn-enroll"
                             >
                                 Enroll Now
@@ -105,10 +105,7 @@ const AboutPage = () => {
                         <div className="intro-content" data-aos="fade-right">
                             <h2>About Our Centre</h2>
                             <p>
-                                Founded by master perfumers, the AROMA RESEARCH CENTRE blends scientific innovation 
-                                with artistic excellence to create extraordinary fragrances. We're committed to 
-                                preserving traditional knowledge while pioneering sustainable practices for 
-                                the future of perfumery.
+                                The AROMA RESEARCH CENTRE excels in fragrance by blending science, art, and business., deeply study plants for quality ingredients, use advanced tech to understand scents, and creatively design unique perfumes. We also create custom fragrances for clients, offer training in perfumery and marketing, and combine science, art, and psychology in their work. Sustainability and global collaboration are key, and AROMA RESEARCH CENTRE constantly experiment with new ideas to stay innovative.
                             </p>
                         </div>
                         <div className="intro-image" data-aos="fade-left">
@@ -134,13 +131,9 @@ const AboutPage = () => {
                         </div>
                         <div className="education-text" data-aos="fade-left">
                             <p>
-                                Our comprehensive program blends science with creativity. Students master fragrance 
-                                chemistry, from plant properties to extraction methods and scent classification.
+                                AROMA RESEARCH CENTRE offers online perfumery training in three steps, like learning to bake. Level 1 is the basics: you'd learn about different smells (like flowers or fruits) and how perfumes are generally made. Level 2 gets a bit more involved: you'd start understanding how different scents blend together and last over time. Level 3 is the advanced stage where you'd learn to create more complex and unique perfumes, maybe even for specific purposes. Each level builds on the previous one to help you become a skilled perfume creator from your own home.
                             </p>
-                            <p>
-                                Hands-on training develops essential olfactory skills for creating balanced, 
-                                signature fragrances that stand out in the competitive market.
-                            </p>
+
                         </div>
                     </div>
                 </div>
@@ -163,16 +156,13 @@ const AboutPage = () => {
                             <div className="level-content">
                                 <h3>Introduction to Perfumery</h3>
                                 <p>
-                                    Begin your journey with our beginner-friendly approach to fragrance fundamentals.
+                                LEVEL 1 is a simple entrance examination that includes your score and a certificate upon completion. This initial level is designed to improve your knowledge in perfumery science and build your confidence to continue your learning journey. Upon finishing the examination, you will receive a LEVEL 1 Certificate to keep. The test consists of 50 questions, and you can select your answer from the provided list. Your final score will be displayed on your certificate.
+
                                 </p>
-                                <ul className="level-features">
-                                    <li><span>✓</span> 50 question assessment with certificate</li>
-                                    <li><span>✓</span> Scent families & identification</li>
-                                    <li><span>✓</span> Blending essentials</li>
-                                </ul>
+                               
                                 <div className="level-action">
-                                    <button 
-                                        onClick={handleLevelOnePayment} 
+                                    <button
+                                        onClick={handleLevelOnePayment}
                                         className="btn-level"
                                     >
                                         Start Now
@@ -183,8 +173,8 @@ const AboutPage = () => {
                     </div>
                 </div>
             </section>
-            
-            {/* CTA Section with Copyright */}
+
+            {/* CTA Section with Copyright (Updated to match AboutDetailedPage) */}
             <section className="cta-section">
                 <div className="container">
                     <div className="cta-content" data-aos="zoom-in">
@@ -193,14 +183,14 @@ const AboutPage = () => {
                             <Link to="/contact" className="btn-primary">Contact Now</Link>
                             <Link to="/about-detailed" className="btn-secondary">Learn More</Link>
                         </div>
-                        
-                        {/* Copyright Information */}
+
+                        {/* Copyright Information (Added to match AboutDetailedPage) */}
                         <div className="copyright-container">
                             <div className="copyright">
                                 © 2025 AROMA RESEARCH CENTRE. All Rights Reserved
                             </div>
                             <div className="powered-by">
-                                Powered by <a href="https://www.inspitetech.com/index.html#" target="_blank" rel="noopener noreferrer">Inspite Technologies</a>
+                                Run by <a href="https://aprcgroups.in/" target="_blank" rel="noopener noreferrer">APRCGROUPS</a>
                             </div>
                         </div>
                     </div>

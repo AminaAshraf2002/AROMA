@@ -165,7 +165,7 @@ const QuizPage = () => {
     },
     {
       "question": "Applying perfume to which areas of the body tends to make it last longer due to natural body heat?",
-      "options": ["Hair and clothing", "Hands and feet", "Pulse points (wrists, neck, behind ears)"],
+      "options": ["Hair and clothing", "Hands and feet", "Pulse points (wrists, neck, behind ears)", " Areas exposed to the open air"],
       "answer": 3
     },
     {

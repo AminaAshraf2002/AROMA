@@ -7,12 +7,12 @@ import { Droplet, Leaf, BookOpen, Users, Beaker, Award, Globe, Zap } from 'lucid
 // Image imports
 import backgroundImg from '../assets/image.jpeg';
 import logoImage from '../assets/AROMA.png';
-import labImage from '../assets/img.jpeg';
-import teamImage from '../assets/img1.jpg';
-import researchImage from '../assets/img1.jpg';
-import botanicalImage from '../assets/img1.jpg';
-import creativeImage from '../assets/img1.jpg';
-import educationImage from '../assets/img1.jpg';
+import labImage from '../assets/image.jpeg';
+import teamImage from '../assets/institute5.jpeg';
+import researchImage from '../assets/institute8.jpeg';
+import botanicalImage from '../assets/sp3.jpeg';
+import creativeImage from '../assets/sp1.jpeg';
+import educationImage from '../assets/institute6.jpeg';
 import './AboutDetailedPage.css';
 
 const AboutDetailedPage = () => {
@@ -515,7 +515,7 @@ const AboutDetailedPage = () => {
                                 © 2025 AROMA RESEARCH CENTRE. All Rights Reserved
                             </div>
                             <div className="powered-by">
-                                Powered by <a href="https://www.inspitetech.com/index.html#" target="_blank" rel="noopener noreferrer">Inspite Technologies</a>
+                                Run by <a href="https://aprcgroups.in/" target="_blank" rel="noopener noreferrer">APRCGROUPS</a>
                             </div>
                         </div>
                     </div>
