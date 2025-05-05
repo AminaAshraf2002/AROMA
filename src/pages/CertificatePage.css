@@ -297,6 +297,7 @@
   flex-direction: column;
   align-items: center;
   margin-bottom: 40px;
+  margin-top: 150px;
 }
 
 .certificate-text {
@@ -311,6 +312,7 @@
   color: #333;
   margin: 10px 0;
   position: relative;
+  
 }
 
 .certificate-name::after {
@@ -555,5 +557,111 @@
   .seal-logo {
     width: 30px;
     height: 30px;
+  }
+}
+/* Add these styles to your existing CertificatePage.css */
+
+/* Green certificate styles */
+.green-certificate {
+  position: relative;
+  background-color: transparent;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  padding: 0; /* Remove padding to allow image to fill */
+  border: none;
+}
+
+.certificate-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.green-certificate-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.certificate-content-overlay {
+  position: relative;
+  z-index: 2;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  /* Make text stand out against the background */
+  color: #000;
+}
+
+/* Adjustments for text to display well on the green background */
+.green-certificate .certificate-title h2 {
+  color: #fff;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+  margin-top: 60px; /* Push down to avoid overlapping with the top design */
+}
+
+.green-certificate .certificate-name {
+  color: #000;
+  font-size: 32px;
+  font-weight: bold;
+  margin: 20px 0;
+  position: relative;
+}
+
+.green-certificate .certificate-course {
+  color: #074e00;
+  font-weight: bold;
+}
+
+.green-certificate .certificate-text {
+  color: #333;
+}
+
+.green-certificate .certificate-score {
+  color: #074e00;
+  font-weight: bold;
+}
+
+.green-certificate .certificate-footer {
+  margin-top: auto; /* Push to bottom of container */
+  padding-top: 30px;
+}
+
+.green-certificate .signature-line {
+  background-color: #333;
+}
+
+.green-certificate .certificate-date,
+.green-certificate .signature-name,
+.green-certificate .signature-title,
+.green-certificate .certificate-id {
+  color: #333;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .green-certificate .certificate-title h2 {
+    margin-top: 40px;
+    font-size: 22px;
+  }
+  
+  .certificate-content-overlay {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .green-certificate .certificate-title h2 {
+    margin-top: 30px;
+    font-size: 18px;
+  }
+  
+  .certificate-content-overlay {
+    padding: 15px;
   }
 }

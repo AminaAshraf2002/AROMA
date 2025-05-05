@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Eye, EyeOff, User, Lock, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -6,18 +6,23 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 import './LoginPage.css';
 
-// Import images directly - you'll need to place these in your src/assets folder
+// Import images directly
 import perfumeBottleImg from '../assets/img1.jpg';
 import backgroundImg from '../assets/image.jpeg';
-import logo from '../assets/AROMA.png'
+import logo from '../assets/AROMA.png';
+
+// Use your backend URL - could also be set from an environment variable
+const API_BASE_URL = 'http://localhost:3000';
 
 const LoginPage = () => {
-  const navigate = useNavigate(); // Add this line to use navigation
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [loginError, setLoginError] = useState('');
 
+  // Initialize AOS and Google Sign-In
   useEffect(() => {
     // Initialize AOS
     AOS.init({
@@ -38,38 +43,81 @@ const LoginPage = () => {
     };
 
     loadGoogleScript();
+
+    // Cleanup function
+    return () => {
+      // Remove any lingering Google sign-in elements
+      const googleSignInElements = document.querySelectorAll('[data-google-signin]');
+      googleSignInElements.forEach(el => el.remove());
+    };
   }, []);
 
-  const initializeGoogleSignIn = () => {
+  // Initialize Google Sign-In
+  const initializeGoogleSignIn = useCallback(() => {
     if (window.google) {
-      window.google.accounts.id.initialize({
-        client_id: 'YOUR_GOOGLE_CLIENT_ID', // Replace with your Google Client ID
-        callback: handleGoogleSignIn
-      });
-      
-      window.google.accounts.id.renderButton(
-        document.getElementById('google-signin-button'),
-        { 
-          type: 'standard',
-          theme: 'outline',
-          size: 'large',
-          shape: 'rectangular',
-          text: 'continue_with',
-          width: document.getElementById('google-signin-button').offsetWidth
-        }
-      );
-    }
-  };
+      try {
+        window.google.accounts.id.initialize({
+          client_id: '86399339078-e84i02so8c1ass4bsb752s6ofvb962lk.apps.googleusercontent.com',
+          callback: handleGoogleSignIn,
+          auto_select: false,
+          cancel_on_tap_outside: true,
+          use_fedcm_for_prompt: true, // Enable FedCM
+          context: 'signin' // Explicitly set the context to sign-in
+        });
+        
+        // Render Google Sign-In button
+        window.google.accounts.id.renderButton(
+          document.getElementById('google-signin-button'),
+          { 
+            type: 'standard',
+            theme: 'outline',
+            size: 'large',
+            shape: 'rectangular',
+            text: 'continue_with',
+            width: 300,
+            is_fedcm_supported: true // Add FedCM support flag
+          }
+        );
 
+        // Update to FedCM compatible prompt handling
+        window.google.accounts.id.prompt((notification) => {
+          // Replace isNotDisplayed() with FedCM compatible methods
+          if (notification.isDisplayMoment()) {
+            console.log('Google Sign-In UI displayed');
+          } else if (notification.isSkippedMoment()) {
+            console.log('Google Sign-In UI skipped');
+          } else if (notification.isDismissedMoment()) {
+            console.log('Google Sign-In UI dismissed');
+          } else if (notification.isNotDisplayed) {
+            console.log('Google Sign-In not displayed');
+          }
+        });
+      } catch (error) {
+        console.error('Google Sign-In initialization error:', error);
+        setLoginError('Failed to initialize Google Sign-In');
+      }
+    } else {
+      console.error('Google Sign-In script not loaded');
+      setLoginError('Google Sign-In service unavailable');
+    }
+  }, []);
+
+  // Handle Google Sign-In
   const handleGoogleSignIn = async (response) => {
+    setIsLoading(true);
+    setLoginError('');
+
     try {
-      setIsLoading(true);
-      
-      // Get ID token from Google response
+      // Validate response
+      if (!response || !response.credential) {
+        throw new Error('No credentials received');
+      }
+
       const token = response.credential;
+      console.log('Google Sign-In Token received');
       
-      // Send token to your backend
-      const result = await fetch('/api/auth/google', {
+      // Send token to backend - use full URL
+      const result = await fetch(`${API_BASE_URL}/api/auth/google`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -77,56 +125,95 @@ const LoginPage = () => {
         body: JSON.stringify({ token })
       });
       
+      // Check response
+      if (!result.ok) {
+        const errorData = await result.text();
+        console.error('Server Error Response:', errorData);
+        throw new Error(errorData || 'Authentication failed');
+      }
+      
       const data = await result.json();
+      console.log('Auth Success:', data.success);
       
       if (data.success) {
-        // Store user data and token
-        localStorage.setItem('user', JSON.stringify(data.user));
+        // Store authentication details
         localStorage.setItem('token', data.token);
         
-        // Navigate to About page after successful login
-        navigate('/about');
+        // Handle first-time vs returning users
+        if (data.isFirstTimeUser) {
+          console.log('First time user - redirecting to complete profile');
+          navigate('/complete-profile');
+        } else {
+          console.log('Returning user - redirecting to about');
+          localStorage.setItem('user', JSON.stringify(data.user));
+          navigate('/about');
+        }
       } else {
-        console.error('Google sign-in failed:', data.message);
+        throw new Error(data.message || 'Login unsuccessful');
       }
     } catch (error) {
-      console.error('Error during Google sign-in:', error);
+      console.error('Google sign-in error:', error);
+      setLoginError(error.message || 'An unexpected error occurred');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleSubmit = (e) => {
+  // Standard email login handler
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // Simulate authentication
-    setTimeout(() => {
+    setLoginError('');
+
+    try {
+      // Send email/password to backend
+      const result = await fetch(`${API_BASE_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
+      
+      if (!result.ok) {
+        const errorData = await result.text();
+        throw new Error(errorData || 'Login failed');
+      }
+      
+      const data = await result.json();
+      
+      if (data.success) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        navigate('/about');
+      } else {
+        throw new Error(data.message || 'Login unsuccessful');
+      }
+    } catch (error) {
+      setLoginError('Login failed. Please check your credentials.');
+    } finally {
       setIsLoading(false);
-      // Navigate to About page after successful login
-      navigate('/about');
-    }, 1500);
+    }
   };
 
+  // Navigate to registration
   const handleRegister = () => {
     navigate('/');
   };
 
+  // Rest of the component remains the same
   return (
     <div className="login-page">
-      {/* Single background image with blur and overlay */}
       <div className="background-container">
         <img src={backgroundImg} alt="" className="background-image" />
         <div className="blur-overlay"></div>
       </div>
       
       <div className="content-container">
-        {/* Login card section (removed branding section from here) */}
         <div className="card-container" data-aos="zoom-in" data-aos-delay="300">
           <div className="login-card">
-            {/* Card with two columns layout */}
             <div className="card-inner">
-              {/* Left column - perfume image side */}
+              {/* Left side image */}
               <div className="card-image-side" data-aos="fade-right" data-aos-delay="600">
                 <img src={perfumeBottleImg} alt="Perfume Bottle" className="card-perfume-image" />
                 <div className="image-overlay"></div>
@@ -136,16 +223,22 @@ const LoginPage = () => {
                 </div>
               </div>
               
-              {/* Right column - login form side */}
+              {/* Login form side */}
               <div className="card-form-side">
                 <div className="card-header">
-                  {/* Added logo above Sign In heading */}
                   <div className="card-logo-container">
                     <img src={logo} alt="AROMA Logo" className="card-logo-image" />
                   </div>
                   <h2>Sign In</h2>
                   <p>Welcome back! Please sign in to continue</p>
                 </div>
+                
+                {/* Error Message */}
+                {loginError && (
+                  <div className="error-message" data-aos="fade-up">
+                    {loginError}
+                  </div>
+                )}
                 
                 {/* Google Sign-In Button */}
                 <div className="google-button-container" data-aos="fade-up" data-aos-delay="350">
@@ -155,6 +248,7 @@ const LoginPage = () => {
                   </div>
                 </div>
                 
+                {/* Email Login Form */}
                 <form onSubmit={handleSubmit} className="login-form">
                   <div className="input-group" data-aos="fade-up" data-aos-delay="400">
                     <User className="input-icon" size={18} />

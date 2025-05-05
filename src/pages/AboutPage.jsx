@@ -6,7 +6,7 @@ import { Droplet, Leaf, BookOpen } from 'lucide-react';
 
 // Image imports
 import backgroundImg from '../assets/image.jpeg';
-import labImage from '../assets/img.jpeg';
+import labImage from '../assets/image (1).jpg';
 import ingredientsImage from '../assets/spray.jpeg';
 import levelOneImage from '../assets/institute7.jpeg';
 import logoImage from '../assets/AROMA.png';

@@ -7,7 +7,7 @@ import { Droplet, Leaf, BookOpen, Users, Beaker, Award, Globe, Zap } from 'lucid
 // Image imports
 import backgroundImg from '../assets/image.jpeg';
 import logoImage from '../assets/AROMA.png';
-import labImage from '../assets/image.jpeg';
+import labImage from '../assets/image (3).jpg';
 import teamImage from '../assets/institute5.jpeg';
 import researchImage from '../assets/institute8.jpeg';
 import botanicalImage from '../assets/sp3.jpeg';
@@ -499,6 +499,7 @@ const AboutDetailedPage = () => {
             </section>
 
             {/* Call to Action Section */}
+            {/* Call to Action Section with Policy Links */}
             <section className="cta-section">
                 <div className="container">
                     <div className="cta-content" data-aos="zoom-in">
@@ -507,6 +508,14 @@ const AboutDetailedPage = () => {
                         <div className="cta-buttons">
                             <button onClick={handleEnrollNow} className="btn-primary">Enroll Now</button>
                             <Link to="/contact" className="btn-secondary">Contact Us</Link>
+                        </div>
+
+                        {/* Policy Links */}
+                        <div className="policy-links">
+                            <Link to="/contact-us" className="policy-link">Contact Us</Link>
+                            <Link to="/terms-and-conditions" className="policy-link">Terms and Conditions</Link>
+                            <Link to="/privacy-policy" className="policy-link">Privacy Policy</Link>
+                            <Link to="/cancellation-refund" className="policy-link">Cancellation & Refund</Link>
                         </div>
 
                         {/* Copyright Information */}

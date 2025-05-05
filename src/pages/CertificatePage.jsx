@@ -3,6 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Download, Share, Home, Award } from 'lucide-react';
 import './CertificatePage.css';
 import logo from '../assets/AROMA.png'; // Import the logo image
+// Import the green certificate background image
+import greenCertificateBackground from '../assets/green-certificate-background.jpg'; // You'll need to add this file
 
 const CertificatePage = () => {
     const location = useLocation();
@@ -130,27 +132,24 @@ const CertificatePage = () => {
                     </div>
                 </div>
 
+                {/* Responsive certificate container with the green design */}
                 <div className="certificate-container">
-                    <div className="certificate">
-                        <div className="certificate-border"></div>
-                        <div className="certificate-inner">
-                            <div className="certificate-header-decoration">
-                                <div className="decoration-line"></div>
-                                <div className="decoration-icon">
-                                    <Award size={24} />
-                                </div>
-                                <div className="decoration-line"></div>
-                            </div>
-
+                    <div className="certificate green-certificate">
+                        {/* Background image container */}
+                        <div className="certificate-background">
+                            <img src={greenCertificateBackground} alt="Certificate Background" className="green-certificate-bg" />
+                        </div>
+                        
+                        {/* Certificate content overlaid on the background */}
+                        <div className="certificate-content-overlay">
                             <div className="certificate-title">
-                                <h2>Certificate of Completion</h2>
+                                <h2></h2>
                             </div>
 
                             <div className="certificate-body">
-                                <p className="certificate-text">This is to certify that</p>
-                                <p className="certificate-name">{userName}</p>
-                                <p className="certificate-text">has successfully completed</p>
                                 <p className="certificate-course">Level 1: Fundamentals of Aroma Research</p>
+                                <p className="certificate-text">has successfully completed</p>
+                                <p className="certificate-name">{userName}</p>
                                 <p className="certificate-text">with a score of</p>
                                 <p className="certificate-score">{score}%</p>
                             </div>

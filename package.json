@@ -12,8 +12,12 @@
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "aos": "^2.3.4",
+    "axios": "^1.9.0",
     "framer-motion": "^12.6.3",
+    "google-auth-library": "^9.15.1",
+    "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.487.0",
+    "razorpay": "^2.9.6",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.5.0"

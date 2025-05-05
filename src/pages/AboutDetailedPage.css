@@ -933,3 +933,42 @@
       margin-bottom: 10px;
     }
   }
+  /* Policy Links Styling */
+.policy-links {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin: 30px 0 20px;
+}
+
+.policy-link {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.policy-link:not(:last-child)::after {
+  content: '•';
+  position: absolute;
+  right: -12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.policy-link:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+  .policy-links {
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  .policy-link:not(:last-child)::after {
+    display: none;
+  }
+}
