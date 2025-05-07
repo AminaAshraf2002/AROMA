@@ -8,7 +8,7 @@ import backgroundImg from '../assets/image.jpeg';
 import logo from '../assets/AROMA.png';
 
 // Define the API base URL - same as in your LoginPage.jsx
-const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = 'https://aroma-server.onrender.com';
 
 const CompleteProfilePage = () => {
   const [countryCode, setCountryCode] = useState('');

@@ -36,7 +36,7 @@ const TermsAndConditionsPage = () => {
                             <ul>
                                 <li><Link to="/about" className="nav-link">Home</Link></li>
                                 <li><Link to="/about-detailed" className="nav-link">About</Link></li>
-                                <li><Link to="/contact" className="nav-link">Contact</Link></li>
+                                <li><Link to="/contact-us" className="nav-link">Contact</Link></li>
                             </ul>
                         </nav>
                     </div>

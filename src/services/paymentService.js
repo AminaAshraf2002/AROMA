@@ -1,6 +1,6 @@
 // services/paymentService.js
 
-const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = 'https://aroma-server.onrender.com';
 
 // Helper function to handle responses
 const handleResponse = async (response) => {

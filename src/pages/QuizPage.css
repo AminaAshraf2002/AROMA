@@ -406,3 +406,79 @@
     grid-template-columns: repeat(5, 1fr);
   }
 }
+/* Add these to your QuizPage.css file */
+
+/* Loading state styles */
+.quiz-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f8faf5;
+  padding: 20px;
+}
+
+.loading-message {
+  margin-top: 50px;
+  text-align: center;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(110, 192, 7, 0.2);
+  border-radius: 50%;
+  border-top-color: #6ec007;
+  margin: 0 auto 20px;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Error state styles */
+.quiz-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f8faf5;
+  padding: 20px;
+}
+
+.error-message {
+  margin-top: 50px;
+  text-align: center;
+  max-width: 500px;
+  padding: 30px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.error-message p {
+  color: #e53e3e;
+  margin-bottom: 20px;
+}
+
+.retry-button {
+  background: linear-gradient(to right, #6ec007, #8fd619);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.retry-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(110, 192, 7, 0.3);
+}

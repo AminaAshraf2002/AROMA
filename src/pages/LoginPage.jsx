@@ -12,7 +12,7 @@ import backgroundImg from '../assets/image.jpeg';
 import logo from '../assets/AROMA.png';
 
 // Use your backend URL - could also be set from an environment variable
-const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = 'https://aroma-server.onrender.com';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -314,13 +314,13 @@ const LoginPage = () => {
                   
                   <div className="card-footer" data-aos="fade-up" data-aos-delay="800">
                     <p>
-                      Don't have an account? 
+                     
                       <button 
                         type="button" 
                         onClick={handleRegister} 
                         className="register-link"
                       >
-                        Register now
+                      
                       </button>
                     </p>
                   </div>
