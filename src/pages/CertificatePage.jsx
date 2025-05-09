@@ -4,7 +4,7 @@ import { Download, Share, Home, Award } from 'lucide-react';
 import './CertificatePage.css';
 import logo from '../assets/AROMA.png'; // Import the logo image
 // Import the green certificate background image
-import greenCertificateBackground from '../assets/green-certificate-background.jpg'; // You'll need to add this file
+import greenCertificateBackground from '../assets/aromcerti.jpeg'; // You'll need to add this file
 
 const CertificatePage = () => {
     const location = useLocation();

@@ -187,7 +187,7 @@ const PaymentPage = () => {
               <div className="price-details">
                 <div className="price-row">
                   <span>Course Fee</span>
-                  <span>₹99.00</span>
+                  <span>₹1.00</span>
                 </div>
                 <div className="price-row">
                   <span>Tax</span>
@@ -195,7 +195,7 @@ const PaymentPage = () => {
                 </div>
                 <div className="price-row total">
                   <span>Total</span>
-                  <span>₹99.00</span>
+                  <span>₹1.00</span>
                 </div>
               </div>
             </div>
