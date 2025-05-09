@@ -5,7 +5,7 @@ import './QuizPage.css';
 import logo from '../assets/AROMA.png'; // Import the logo image
 import axios from 'axios'; // Import axios for making API requests
 
-const API_BASE_URL = 'http://localhost:3000/api';
+const API_BASE_URL = 'https://aroma-server.onrender.com/api';
 
 const QuizPage = () => {
   const [questions, setQuestions] = useState([]);
