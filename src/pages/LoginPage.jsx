@@ -249,7 +249,7 @@ const LoginPage = () => {
                 </div>
                 
                 {/* Email Login Form */}
-                <form onSubmit={handleSubmit} className="login-form">
+                {/* <form onSubmit={handleSubmit} className="login-form">
                   <div className="input-group" data-aos="fade-up" data-aos-delay="400">
                     <User className="input-icon" size={18} />
                     <input
@@ -324,7 +324,7 @@ const LoginPage = () => {
                       </button>
                     </p>
                   </div>
-                </form>
+                </form> */}
               </div>
             </div>
           </div>
