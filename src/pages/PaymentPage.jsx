@@ -446,7 +446,7 @@ const PaymentPage = () => {
           <div className="quiz-completed-message">
             <CheckCircle size={24} className="completion-icon" />
             <h3>You've already completed the Level 1 Quiz!</h3>
-            <p>You can now proceed to Level 2 without additional payment.</p>
+            <p>You can now proceed to Level 2 </p>
             {quizData && (
               <div className="quiz-result-info">
                 {quizData.score && <div className="quiz-score">Score: {quizData.score}%</div>}
