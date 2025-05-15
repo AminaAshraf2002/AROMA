@@ -238,10 +238,10 @@ const CertificatePage = () => {
                         <Download size={18} />
                         <span>Download</span>
                     </button>
-                    <button className="action-button" onClick={handleShare}>
+                    {/* <button className="action-button" onClick={handleShare}>
                         <Share size={18} />
                         <span>Share</span>
-                    </button>
+                    </button> */}
                     <button className="action-button" onClick={handleGoHome}>
                         <Home size={18} />
                         <span>Home</span>
@@ -278,35 +278,25 @@ const CertificatePage = () => {
                                 <span className="detail-label">Certificate ID:</span>
                                 <span className="detail-value">{certificateId}</span>
                             </div>
-                            <div className="detail-row">
+                            {/* <div className="detail-row">
                                 <span className="detail-label">Status:</span>
                                 <span className={`detail-value status-${passed ? 'passed' : 'failed'}`}>
                                     {passed ? 'Passed' : 'Failed'}
                                 </span>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
 
                     <div className="congratulations-message">
-                        {passed ? (
-                            <p>Congratulations! You have successfully completed Level 1 of the Aroma institution course. You are now eligible to proceed to Level 2.</p>
-                        ) : (
-                            <p>You've completed Level 1 of the Aroma institution course. We recommend reviewing the material and retaking the quiz to improve your score.</p>
-                        )}
+                        <p>Congratulations! You have successfully completed Level 1 of the Aroma institution course. You are now eligible to proceed to Level 2.</p>
                     </div>
 
                     <div className="next-steps">
                         <h3>Next Steps</h3>
                         <div className="steps-container">
-                            {passed ? (
-                                <button className="next-button" onClick={() => navigate('/level2')}>
-                                    Continue to Level 2
-                                </button>
-                            ) : (
-                                <button className="retry-button" onClick={() => navigate('/quiz')}>
-                                    Retake Quiz
-                                </button>
-                            )}
+                            <button className="next-button" onClick={() => navigate('/level2')}>
+                                Continue to Level 2
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -384,10 +374,10 @@ const CertificatePage = () => {
                         <Download size={18} />
                         <span>Download</span>
                     </button>
-                    <button className="action-button action-button-mobile" onClick={handleShare}>
+                    {/* <button className="action-button action-button-mobile" onClick={handleShare}>
                         <Share size={18} />
                         <span>Share</span>
-                    </button>
+                    </button> */}
                     <button className="action-button action-button-mobile" onClick={handleGoHome}>
                         <Home size={18} />
                         <span>Home</span>
