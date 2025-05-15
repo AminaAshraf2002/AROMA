@@ -22,6 +22,9 @@ const PaymentPage = () => {
   const [upiId, setUpiId] = useState('');
   const navigate = useNavigate();
   
+  // Base API URL - update this to match your actual API base URL
+  const API_BASE_URL = 'https://aroma-server.onrender.com';
+  
   useEffect(() => {
     // First check user profile to see if quiz is completed
     checkUserProfileForQuizCompletion()
@@ -45,6 +48,27 @@ const PaymentPage = () => {
       });
   }, []);
   
+  // Safe fetch wrapper to handle HTML responses
+  const safeFetch = async (url, options = {}) => {
+    try {
+      const response = await fetch(url, options);
+      
+      // Check if response is HTML (not JSON)
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('text/html')) {
+        console.log('Received HTML response instead of JSON');
+        throw new Error('Received HTML response from API');
+      }
+      
+      // Parse as JSON
+      const data = await response.json();
+      return { success: true, data };
+    } catch (error) {
+      console.error(`Error fetching ${url}:`, error);
+      return { success: false, error };
+    }
+  };
+  
   // Check user profile from server to see if quiz is completed
   const checkUserProfileForQuizCompletion = async () => {
     try {
@@ -52,11 +76,28 @@ const PaymentPage = () => {
       if (!token) {
         console.log('No auth token found, redirecting to login');
         navigate('/');
-        return;
+        return false;
+      }
+      
+      // Try to get user data from localStorage first as a fallback
+      try {
+        const userString = localStorage.getItem('user');
+        if (userString) {
+          const userData = JSON.parse(userString);
+          console.log('User data from localStorage:', userData);
+          
+          if (userData && (userData.quizCompleted === true || userData.hasPaid === true)) {
+            console.log('Quiz completed/paid status found in localStorage');
+            setQuizCompleted(true);
+            return true;
+          }
+        }
+      } catch (localStorageError) {
+        console.log('Error checking localStorage:', localStorageError);
       }
       
       // Fetch user profile from server
-      const response = await fetch('/api/user/profile', {
+      const result = await safeFetch(`${API_BASE_URL}/api/user/profile`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -64,7 +105,12 @@ const PaymentPage = () => {
         }
       });
       
-      const userData = await response.json();
+      if (!result.success) {
+        console.log('Failed to fetch profile from API, will try alternative methods');
+        return false;
+      }
+      
+      const userData = result.data;
       console.log('User profile data:', userData);
       
       // Check for quizCompleted field - exactly matching MongoDB field name
@@ -83,8 +129,8 @@ const PaymentPage = () => {
       // Also check for hasPaid field as seen in MongoDB
       if (userData && userData.hasPaid === true) {
         console.log('User has already paid according to profile');
-        // We might want to also check if they've completed the quiz
-        // But hasPaid suggests they should have access to Level 2
+        setQuizCompleted(true);
+        return true;
       }
       
       console.log('Quiz not marked as completed in user profile');
@@ -101,8 +147,8 @@ const PaymentPage = () => {
     try {
       const token = localStorage.getItem('token');
       
-      // Try to load the quiz - this will error with "Quiz already completed" if done
-      const response = await fetch('/api/quiz/load', {
+      // Try direct method: use the quiz load endpoint
+      const result = await safeFetch(`${API_BASE_URL}/api/quiz/load`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -110,7 +156,18 @@ const PaymentPage = () => {
         }
       });
       
-      const data = await response.json();
+      if (!result.success) {
+        // If we get an error that mentions 'already completed', it means the quiz is done
+        const errorStr = result.error.toString();
+        if (errorStr.includes('already completed') || errorStr.includes('Quiz already completed')) {
+          console.log('Quiz completion detected from API error');
+          setQuizCompleted(true);
+          return true;
+        }
+        return false;
+      }
+      
+      const data = result.data;
       console.log('Quiz load response:', data);
       
       // Check for "already completed" message in response
@@ -127,19 +184,37 @@ const PaymentPage = () => {
         return true;
       }
       
+      // Alternative approach: Try to check quiz results if they exist
+      try {
+        const resultsResponse = await safeFetch(`${API_BASE_URL}/api/quiz/results`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (resultsResponse.success && resultsResponse.data) {
+          const resultsData = resultsResponse.data;
+          console.log('Quiz results data:', resultsData);
+          
+          // If we have valid results, the quiz must be completed
+          if (resultsData.success && resultsData.result && 
+              (resultsData.result.passed === true || resultsData.result.score)) {
+            console.log('Quiz completed according to results endpoint');
+            setQuizCompleted(true);
+            setQuizData(resultsData.result);
+            return true;
+          }
+        }
+      } catch (resultsError) {
+        console.log('Error checking quiz results:', resultsError);
+      }
+      
       return false;
       
     } catch (error) {
       console.error('Error checking quiz API:', error);
-      
-      // Check if error contains completion info
-      const errorStr = error.toString();
-      if (errorStr.includes('already completed') || errorStr.includes('Quiz already completed')) {
-        console.log('Quiz completion detected from API error');
-        setQuizCompleted(true);
-        return true;
-      }
-      
       return false;
     }
   };
@@ -175,88 +250,108 @@ const PaymentPage = () => {
     setError('');
     
     try {
-      if (paymentMethod === 'razorpay') {
-        // Before creating order, check one more time if quiz is completed
-        await checkUserProfileForQuizCompletion();
-        
-        if (quizCompleted) {
-          console.log('Quiz completion detected during pre-payment check');
-          setIsLoading(false);
-          navigate('/level2');
-          return;
-        }
+      // Check once more before proceeding with payment
+      const isCompleted = await checkUserProfileForQuizCompletion();
+      if (isCompleted || quizCompleted) {
+        console.log('Quiz completion detected before payment, redirecting');
+        setIsLoading(false);
+        navigate('/level2');
+        return;
+      }
       
+      if (paymentMethod === 'razorpay') {
         // Create Razorpay order
-        const { order, key } = await paymentService.createRazorpayOrder(99, 'INR', paymentMethod);
-        
-        // Get user data for prefill
-        const userString = localStorage.getItem('user');
-        const user = userString ? JSON.parse(userString) : {};
-        
-        // Configure Razorpay options
-        const options = {
-          key,
-          amount: order.amount,
-          currency: order.currency,
-          name: 'Aroma Research Center',
-          description: 'Perfumery learning - Entrance Level 1',
-          order_id: order.id,
-          handler: async function (response) {
-            try {
-              // Verify payment
-              await paymentService.verifyRazorpayPayment({
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature
-              });
-              
-              // Navigate to quiz page
-              navigate('/quiz');
-            } catch (error) {
-              // Parse the error to check if it indicates quiz is already completed
-              const errorStr = typeof error === 'string' ? error : JSON.stringify(error);
-              
-              if (errorStr.includes('already completed') || errorStr.includes('Quiz already completed')) {
-                console.log('Quiz completion detected during payment verification');
-                setQuizCompleted(true);
-                setIsLoading(false);
-                navigate('/level2');
-              } else {
-                setError('Payment verification failed. Please try again.');
+        try {
+          const { order, key } = await paymentService.createRazorpayOrder(99, 'INR', paymentMethod);
+          
+          // Get user data for prefill
+          const userString = localStorage.getItem('user');
+          const user = userString ? JSON.parse(userString) : {};
+          
+          // Configure Razorpay options
+          const options = {
+            key,
+            amount: order.amount,
+            currency: order.currency,
+            name: 'Aroma Research Center',
+            description: 'Perfumery learning - Entrance Level 1',
+            order_id: order.id,
+            handler: async function (response) {
+              try {
+                // Verify payment
+                await paymentService.verifyRazorpayPayment({
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature
+                });
+                
+                // Navigate to quiz page
+                navigate('/quiz');
+              } catch (error) {
+                // Check if error indicates quiz is already completed
+                const errorStr = typeof error === 'string' 
+                  ? error 
+                  : (error.message ? error.message : JSON.stringify(error));
+                
+                if (errorStr.includes('already completed') || errorStr.includes('Quiz already completed')) {
+                  console.log('Quiz completion detected during payment verification');
+                  setQuizCompleted(true);
+                  setIsLoading(false);
+                  navigate('/level2');
+                } else {
+                  setError('Payment verification failed. Please try again.');
+                  setIsLoading(false);
+                }
+              }
+            },
+            prefill: {
+              name: cardDetails.name || user.name || '',
+              email: user.email || '',
+            },
+            theme: {
+              color: '#3399cc'
+            },
+            modal: {
+              ondismiss: function() {
                 setIsLoading(false);
               }
             }
-          },
-          prefill: {
-            name: cardDetails.name || user.name || '',
-            email: user.email || '',
-          },
-          theme: {
-            color: '#3399cc'
-          },
-          modal: {
-            ondismiss: function() {
+          };
+          
+          // Open Razorpay checkout
+          const razorpay = await paymentService.openRazorpayCheckout(options);
+          
+          // Handle payment failure
+          razorpay.on('payment.failed', function (response) {
+            const errorDescription = response.error?.description || '';
+            
+            if (errorDescription.includes('already completed') || errorDescription.includes('Quiz already completed')) {
+              console.log('Quiz completion detected during payment failure');
+              setQuizCompleted(true);
+              setTimeout(() => navigate('/level2'), 1000);
+            } else {
+              setError(`Payment failed: ${errorDescription}`);
               setIsLoading(false);
             }
+          });
+        } catch (paymentError) {
+          // Special handling for 500 (Internal Server Error)
+          if (paymentError.message && paymentError.message.includes('500')) {
+            console.log('Razorpay returned a 500 error - checking if quiz is already completed');
+            
+            // After a 500 error, check if the quiz is now completed
+            const isNowCompleted = await checkQuizApiForCompletion();
+            if (isNowCompleted) {
+              console.log('Quiz appears to be completed after payment attempt');
+              setIsLoading(false);
+              navigate('/level2');
+              return;
+            }
           }
-        };
-        
-        // Open Razorpay checkout
-        const razorpay = await paymentService.openRazorpayCheckout(options);
-        
-        // Handle payment failure
-        razorpay.on('payment.failed', function (response) {
-          const errorDescription = response.error?.description || '';
           
-          if (errorDescription.includes('already completed') || errorDescription.includes('Quiz already completed')) {
-            console.log('Quiz completion detected during payment failure');
-            setQuizCompleted(true);
-            setTimeout(() => navigate('/level2'), 1000);
-          } else {
-            setError(`Payment failed: ${errorDescription}`);
-            setIsLoading(false);
-          }
-        });
+          // Re-throw for general error handling
+          throw paymentError;
+        }
       } else {
         // Process direct payment for card and UPI options
         try {
