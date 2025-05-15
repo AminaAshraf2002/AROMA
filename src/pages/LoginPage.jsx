@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Eye, EyeOff, User, Lock, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 import AOS from 'aos';
@@ -16,9 +15,6 @@ const API_BASE_URL = 'https://aroma-server.onrender.com';
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [loginError, setLoginError] = useState('');
   const [isGoogleButtonVisible, setIsGoogleButtonVisible] = useState(true);
@@ -74,7 +70,8 @@ const LoginPage = () => {
           use_fedcm_for_prompt: true, // Enable FedCM for One Tap
           use_fedcm_for_button: true, // Enable FedCM for Button
           context: 'signin', // Explicitly set the context to sign-in
-          ux_mode: 'popup',
+          ux_mode: 'redirect',
+          login_uri: 'https://aromareserch.com/api/auth/callback/google',
           itp_support: true,
           onError: (error) => {
             console.error('Google Sign-In initialization error:', error);
@@ -187,48 +184,6 @@ const LoginPage = () => {
     }
   };
 
-  // Standard email login handler
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setLoginError('');
-
-    try {
-      // Send email/password to backend
-      const result = await fetch(`${API_BASE_URL}/api/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-      });
-      
-      if (!result.ok) {
-        const errorData = await result.text();
-        throw new Error(errorData || 'Login failed');
-      }
-      
-      const data = await result.json();
-      
-      if (data.success) {
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
-        navigate('/about');
-      } else {
-        throw new Error(data.message || 'Login unsuccessful');
-      }
-    } catch (error) {
-      setLoginError('Login failed. Please check your credentials.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Navigate to registration
-  const handleRegister = () => {
-    navigate('/');
-  };
-
   // Manual sign-in with Google by clicking button
   const handleManualGoogleSignIn = () => {
     if (window.google && window.google.accounts && window.google.accounts.id) {
@@ -248,7 +203,11 @@ const LoginPage = () => {
     }
   };
 
-  // Rest of the component remains the same
+  // Help link to explain third-party sign-in settings
+  const handleHelp = () => {
+    window.open('https://support.google.com/chrome/answer/95472', '_blank');
+  };
+
   return (
     <div className="login-page">
       <div className="background-container">
@@ -277,7 +236,7 @@ const LoginPage = () => {
                     <img src={logo} alt="AROMA Logo" className="card-logo-image" />
                   </div>
                   <h2>Sign In</h2>
-                  <p>Welcome back! Please sign in to continue</p>
+                  <p>Welcome back! Please sign in with Google to continue</p>
                 </div>
                 
                 {/* Error Message */}
@@ -291,96 +250,34 @@ const LoginPage = () => {
                 <div className="google-button-container" data-aos="fade-up" data-aos-delay="350">
                   {isGoogleButtonVisible && <div id="google-signin-button"></div>}
                   {showManualSignIn && (
-                    <button 
-                      onClick={handleManualGoogleSignIn}
-                      className="manual-google-signin"
-                      data-aos="fade-up" 
-                      data-aos-delay="450"
-                    >
-                      Try Google Sign-In Again
-                    </button>
+                    <div className="reset-instructions">
+                      <button 
+                        onClick={handleManualGoogleSignIn}
+                        className="submit-button try-again-button"
+                        data-aos="fade-up" 
+                        data-aos-delay="450"
+                      >
+                        Try Google Sign-In Again
+                      </button>
+                      <button 
+                        onClick={handleHelp}
+                        className="help-button"
+                        data-aos="fade-up" 
+                        data-aos-delay="500"
+                      >
+                        Need Help?
+                      </button>
+                    </div>
                   )}
-                  <div className="or-divider">
-                    <span>or sign in with email</span>
-                  </div>
                 </div>
                 
-                {/* Email Login Form */}
-                <form onSubmit={handleSubmit} className="login-form">
-                  <div className="input-group" data-aos="fade-up" data-aos-delay="400">
-                    <User className="input-icon" size={18} />
-                    <input
-                      type="email"
-                      placeholder="Email Address"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      className="input-field"
-                    />
+                {/* Loading indicator */}
+                {isLoading && (
+                  <div className="loading-indicator" data-aos="fade-up">
+                    <div className="spinner"></div>
+                    <p>Signing in with Google...</p>
                   </div>
-                  
-                  <div className="input-group" data-aos="fade-up" data-aos-delay="500">
-                    <Lock className="input-icon" size={18} />
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      className="input-field"
-                    />
-                    <button 
-                      type="button" 
-                      className="toggle-password"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? 
-                        <EyeOff size={18} /> : 
-                        <Eye size={18} />
-                      }
-                    </button>
-                  </div>
-                  
-                  <div className="form-options" data-aos="fade-up" data-aos-delay="600">
-                    <label className="remember-option">
-                      <input type="checkbox" />
-                      <span>Remember me</span>
-                    </label>
-                    <span className="forgot-link">Forgot password?</span>
-                  </div>
-                  
-                  <button 
-                    type="submit" 
-                    className="submit-button"
-                    disabled={isLoading}
-                    data-aos="fade-up" 
-                    data-aos-delay="700"
-                  >
-                    {isLoading ? (
-                      <>
-                        <span className="spinner"></span>
-                        <span>Signing in...</span>
-                      </>
-                    ) : (
-                      <>
-                        <span>Sign In</span>
-                        <ChevronRight size={18} />
-                      </>
-                    )}
-                  </button>
-                  
-                  <div className="card-footer" data-aos="fade-up" data-aos-delay="800">
-                    <p>
-                      <button 
-                        type="button" 
-                        onClick={handleRegister} 
-                        className="register-link"
-                      >
-                        Create an account
-                      </button>
-                    </p>
-                  </div>
-                </form>
+                )}
               </div>
             </div>
           </div>

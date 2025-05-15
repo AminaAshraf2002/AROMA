@@ -510,3 +510,105 @@
     min-height: 150px;
   }
 }
+/* Additional Google Sign-In styles to complement existing CSS */
+.error-message {
+  background-color: rgba(255, 0, 0, 0.1);
+  border-left: 4px solid #f44336;
+  padding: 10px 15px;
+  margin: 15px 30px;
+  border-radius: 10px;
+  color: #d32f2f;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.reset-instructions {
+  margin: 15px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 12px;
+}
+
+.try-again-button {
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.help-button {
+  background: none;
+  border: 2px solid #6ec007;
+  border-radius: 10px;
+  color: #6ec007;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.help-button:hover {
+  background-color: rgba(110, 192, 7, 0.1);
+  transform: translateY(-2px);
+}
+
+.loading-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px 0;
+  text-align: center;
+  color: #6ec007;
+}
+
+.loading-indicator .spinner {
+  margin-bottom: 15px;
+  border: 3px solid rgba(110, 192, 7, 0.3);
+  border-top-color: #6ec007;
+}
+
+.loading-indicator p {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Fix for Google button container */
+#google-signin-button {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* Make sure Google button is centered and appropriate size */
+#google-signin-button iframe {
+  width: 100% !important;
+  max-width: 300px !important;
+}
+
+@media (max-width: 768px) {
+  .error-message {
+    margin: 15px 20px;
+    font-size: 13px;
+  }
+  
+  .help-button,
+  .try-again-button {
+    font-size: 13px;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .error-message {
+    margin: 15px 15px;
+    padding: 8px 12px;
+  }
+}
