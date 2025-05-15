@@ -9,9 +9,10 @@ import * as paymentService from '../services/paymentService';
 
 const PaymentPage = () => {
   const [paymentMethod, setPaymentMethod] = useState('razorpay');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Start with loading true
   const [error, setError] = useState('');
   const [quizCompleted, setQuizCompleted] = useState(false);
+  const [quizData, setQuizData] = useState(null);
   const [cardDetails, setCardDetails] = useState({
     number: '',
     expiryDate: '',
@@ -22,33 +23,136 @@ const PaymentPage = () => {
   const navigate = useNavigate();
   
   useEffect(() => {
-    // Check if the user has already completed the quiz
-    const checkQuizCompletion = () => {
-      try {
-        // Get user data from localStorage
-        const userString = localStorage.getItem('user');
-        if (userString) {
-          const user = JSON.parse(userString);
-          // Check if the user has completed Level 1 quiz
-          if (user.quizCompleted || user.level > 1) {
-            setQuizCompleted(true);
-          }
+    // First check user profile to see if quiz is completed
+    checkUserProfileForQuizCompletion()
+      .then(() => {
+        // If quiz isn't marked as completed from profile check,
+        // check if there's an error when trying to load the quiz
+        if (!quizCompleted) {
+          return checkQuizApiForCompletion();
         }
-      } catch (error) {
-        console.error('Error checking quiz completion status:', error);
-      }
-    };
-
-    // Load Razorpay script on component mount
-    paymentService.loadRazorpayScript()
+      })
       .catch(error => {
-        console.error('Failed to load Razorpay script:', error);
-        setError('Failed to load payment gateway. Please try again later.');
+        console.error('Error during startup checks:', error);
+      })
+      .finally(() => {
+        // Load Razorpay script
+        loadRazorpay()
+          .finally(() => {
+            // Set loading to false when all operations are complete
+            setIsLoading(false);
+          });
+      });
+  }, []);
+  
+  // Check user profile from server to see if quiz is completed
+  const checkUserProfileForQuizCompletion = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.log('No auth token found, redirecting to login');
+        navigate('/');
+        return;
+      }
+      
+      // Fetch user profile from server
+      const response = await fetch('/api/user/profile', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
       });
       
-    // Check quiz completion status
-    checkQuizCompletion();
-  }, []);
+      const userData = await response.json();
+      console.log('User profile data:', userData);
+      
+      // Check for quizCompleted field - exactly matching MongoDB field name
+      if (userData && userData.quizCompleted === true) {
+        console.log('Quiz marked as completed in user profile');
+        setQuizCompleted(true);
+        
+        // If there's quiz result data available, save it
+        if (userData.quizResult) {
+          setQuizData(userData.quizResult);
+        }
+        
+        return true;
+      }
+      
+      // Also check for hasPaid field as seen in MongoDB
+      if (userData && userData.hasPaid === true) {
+        console.log('User has already paid according to profile');
+        // We might want to also check if they've completed the quiz
+        // But hasPaid suggests they should have access to Level 2
+      }
+      
+      console.log('Quiz not marked as completed in user profile');
+      return false;
+      
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+      return false;
+    }
+  };
+  
+  // Check quiz API to see if quiz is already completed
+  const checkQuizApiForCompletion = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      
+      // Try to load the quiz - this will error with "Quiz already completed" if done
+      const response = await fetch('/api/quiz/load', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      const data = await response.json();
+      console.log('Quiz load response:', data);
+      
+      // Check for "already completed" message in response
+      if (data && !data.success && data.message && 
+          (data.message.includes('already completed') || data.message === 'Quiz already completed')) {
+        console.log('Quiz already completed according to API response');
+        setQuizCompleted(true);
+        
+        // If there's result data in the response, save it
+        if (data.result) {
+          setQuizData(data.result);
+        }
+        
+        return true;
+      }
+      
+      return false;
+      
+    } catch (error) {
+      console.error('Error checking quiz API:', error);
+      
+      // Check if error contains completion info
+      const errorStr = error.toString();
+      if (errorStr.includes('already completed') || errorStr.includes('Quiz already completed')) {
+        console.log('Quiz completion detected from API error');
+        setQuizCompleted(true);
+        return true;
+      }
+      
+      return false;
+    }
+  };
+  
+  // Load Razorpay script
+  const loadRazorpay = async () => {
+    try {
+      await paymentService.loadRazorpayScript();
+    } catch (error) {
+      console.error('Failed to load Razorpay script:', error);
+      setError('Failed to load payment gateway. Please try again later.');
+    }
+  };
   
   const handleInputChange = (e, field) => {
     if (field.startsWith('card.')) {
@@ -62,6 +166,7 @@ const PaymentPage = () => {
   const handleProceedToPayment = async () => {
     // If quiz is already completed, navigate to level2
     if (quizCompleted) {
+      console.log('Quiz already completed, navigating to Level 2');
       navigate('/level2');
       return;
     }
@@ -71,6 +176,16 @@ const PaymentPage = () => {
     
     try {
       if (paymentMethod === 'razorpay') {
+        // Before creating order, check one more time if quiz is completed
+        await checkUserProfileForQuizCompletion();
+        
+        if (quizCompleted) {
+          console.log('Quiz completion detected during pre-payment check');
+          setIsLoading(false);
+          navigate('/level2');
+          return;
+        }
+      
         // Create Razorpay order
         const { order, key } = await paymentService.createRazorpayOrder(99, 'INR', paymentMethod);
         
@@ -98,8 +213,18 @@ const PaymentPage = () => {
               // Navigate to quiz page
               navigate('/quiz');
             } catch (error) {
-              setError('Payment verification failed. Please try again.');
-              setIsLoading(false);
+              // Parse the error to check if it indicates quiz is already completed
+              const errorStr = typeof error === 'string' ? error : JSON.stringify(error);
+              
+              if (errorStr.includes('already completed') || errorStr.includes('Quiz already completed')) {
+                console.log('Quiz completion detected during payment verification');
+                setQuizCompleted(true);
+                setIsLoading(false);
+                navigate('/level2');
+              } else {
+                setError('Payment verification failed. Please try again.');
+                setIsLoading(false);
+              }
             }
           },
           prefill: {
@@ -108,6 +233,11 @@ const PaymentPage = () => {
           },
           theme: {
             color: '#3399cc'
+          },
+          modal: {
+            ondismiss: function() {
+              setIsLoading(false);
+            }
           }
         };
         
@@ -116,13 +246,35 @@ const PaymentPage = () => {
         
         // Handle payment failure
         razorpay.on('payment.failed', function (response) {
-          setError(`Payment failed: ${response.error.description}`);
-          setIsLoading(false);
+          const errorDescription = response.error?.description || '';
+          
+          if (errorDescription.includes('already completed') || errorDescription.includes('Quiz already completed')) {
+            console.log('Quiz completion detected during payment failure');
+            setQuizCompleted(true);
+            setTimeout(() => navigate('/level2'), 1000);
+          } else {
+            setError(`Payment failed: ${errorDescription}`);
+            setIsLoading(false);
+          }
         });
       } else {
         // Process direct payment for card and UPI options
-        await paymentService.processDirectPayment(99, paymentMethod);
-        navigate('/quiz');
+        try {
+          await paymentService.processDirectPayment(99, paymentMethod);
+          navigate('/quiz');
+        } catch (error) {
+          // Check if payment error indicates quiz completion
+          const errorStr = typeof error === 'string' ? error : JSON.stringify(error);
+          
+          if (errorStr.includes('already completed') || errorStr.includes('Quiz already completed')) {
+            console.log('Quiz completion detected during direct payment');
+            setQuizCompleted(true);
+            setIsLoading(false);
+            navigate('/level2');
+          } else {
+            throw error; // Re-throw if it's a different error
+          }
+        }
       }
     } catch (error) {
       let errorMessage = 'Payment processing failed. Please try again.';
@@ -130,20 +282,18 @@ const PaymentPage = () => {
       // Try to extract more detailed error message
       if (error.message) {
         try {
+          // See if error message is JSON string
           const parsedError = JSON.parse(error.message);
           errorMessage = parsedError.message || errorMessage;
         } catch (e) {
+          // If not JSON, use the raw message
           errorMessage = error.message;
         }
       }
       
       setError(errorMessage);
       console.error('Payment error:', error);
-    } finally {
-      // For non-Razorpay methods, we set isLoading to false here
-      if (paymentMethod !== 'razorpay') {
-        setIsLoading(false);
-      }
+      setIsLoading(false);
     }
   };
 
@@ -200,6 +350,19 @@ const PaymentPage = () => {
             <CheckCircle size={24} className="completion-icon" />
             <h3>You've already completed the Level 1 Quiz!</h3>
             <p>You can now proceed to Level 2 without additional payment.</p>
+            {quizData && (
+              <div className="quiz-result-info">
+                {quizData.score && <div className="quiz-score">Score: {quizData.score}%</div>}
+                {quizData.correctAnswers && quizData.totalQuestions && (
+                  <div className="quiz-detail">
+                    Correct answers: {quizData.correctAnswers}/{quizData.totalQuestions}
+                  </div>
+                )}
+                {quizData.certificateId && (
+                  <div className="certificate-id">Certificate ID: {quizData.certificateId}</div>
+                )}
+              </div>
+            )}
           </div>
         )}
 
@@ -223,7 +386,7 @@ const PaymentPage = () => {
               <div className="price-details">
                 <div className="price-row">
                   <span>Course Fee</span>
-                  <span>₹99.00</span>
+                  <span>₹1.00</span>
                 </div>
                 <div className="price-row">
                   <span>Tax</span>
@@ -231,7 +394,7 @@ const PaymentPage = () => {
                 </div>
                 <div className="price-row total">
                   <span>Total</span>
-                  <span>₹99.00</span>
+                  <span>₹1.00</span>
                 </div>
               </div>
             </div>
@@ -259,17 +422,6 @@ const PaymentPage = () => {
               <div className="payment-method-section">
                 <h2>Payment Method</h2>
                 
-                {/* <div className={`payment-option ${paymentMethod === 'card' ? 'selected' : ''}`} onClick={() => setPaymentMethod('card')}>
-                  <div className="option-select">
-                    <div className={`radio-button ${paymentMethod === 'card' ? 'active' : ''}`}></div>
-                  </div>
-                  <div className="option-text">
-                    <CreditCard size={20} />
-                    <span>Credit/Debit Card</span>
-                  </div>
-                  <div className="option-icon">VISA</div>
-                </div>
-                */}
                 <div className={`payment-option ${paymentMethod === 'razorpay' ? 'selected' : ''}`} onClick={() => setPaymentMethod('razorpay')}>
                   <div className="option-select">
                     <div className={`radio-button ${paymentMethod === 'razorpay' ? 'active' : ''}`}></div>
@@ -281,60 +433,6 @@ const PaymentPage = () => {
                   <div className="option-icon">Razorpay</div>
                 </div>
                 
-                {/* <div className={`payment-option ${paymentMethod === 'upi' ? 'selected' : ''}`} onClick={() => setPaymentMethod('upi')}>
-                  <div className="option-select">
-                    <div className={`radio-button ${paymentMethod === 'upi' ? 'active' : ''}`}></div>
-                  </div>
-                  <div className="option-text">
-                    <DollarSign size={20} />
-                    <span>UPI</span>
-                  </div>
-                  <div className="option-icon">UPI</div>
-                </div> */}
-
-                {paymentMethod === 'card' && (
-                  <div className="card-details">
-                    <div className="form-group">
-                      <label>Card Number</label>
-                      <input 
-                        type="text" 
-                        placeholder="1234 5678 9012 3456" 
-                        value={cardDetails.number}
-                        onChange={(e) => handleInputChange(e, 'card.number')}
-                      />
-                    </div>
-                    <div className="form-row">
-                      <div className="form-group">
-                        <label>Expiry Date</label>
-                        <input 
-                          type="text" 
-                          placeholder="MM/YY" 
-                          value={cardDetails.expiryDate}
-                          onChange={(e) => handleInputChange(e, 'card.expiryDate')}
-                        />
-                      </div>
-                      <div className="form-group">
-                        <label>CVV</label>
-                        <input 
-                          type="text" 
-                          placeholder="123" 
-                          value={cardDetails.cvv}
-                          onChange={(e) => handleInputChange(e, 'card.cvv')}
-                        />
-                      </div>
-                    </div>
-                    <div className="form-group">
-                      <label>Cardholder Name</label>
-                      <input 
-                        type="text" 
-                        placeholder="John Doe" 
-                        value={cardDetails.name}
-                        onChange={(e) => handleInputChange(e, 'card.name')}
-                      />
-                    </div>
-                  </div>
-                )}
-
                 {paymentMethod === 'razorpay' && (
                   <div className="razorpay-details">
                     <p className="payment-notice">You will be redirected to Razorpay's secure payment gateway to complete your transaction.</p>
@@ -350,21 +448,6 @@ const PaymentPage = () => {
                     </div>
                   </div>
                 )}
-
-                {paymentMethod === 'upi' && (
-                  <div className="upi-details">
-                    <div className="form-group">
-                      <label>UPI ID</label>
-                      <input 
-                        type="text" 
-                        placeholder="yourname@upi" 
-                        value={upiId}
-                        onChange={(e) => handleInputChange(e, 'upiId')}
-                      />
-                    </div>
-                    <p className="payment-notice">Enter your UPI ID to make a direct payment.</p>
-                  </div>
-                )}
               </div>
             ) : (
               <div className="completion-info-section">
@@ -378,6 +461,12 @@ const PaymentPage = () => {
                   <CheckCircle size={20} />
                   <span>Certificate earned</span>
                 </div>
+                {quizData && quizData.certificateId && (
+                  <div className="achievement-details">
+                    <CheckCircle size={20} />
+                    <span>Certificate ID: {quizData.certificateId}</span>
+                  </div>
+                )}
               </div>
             )}
             
@@ -386,7 +475,14 @@ const PaymentPage = () => {
               onClick={handleProceedToPayment}
               disabled={isLoading}
             >
-              {isLoading ? 'PROCESSING...' : quizCompleted ? 'GO TO LEVEL 2' : 'PROCEED TO PAY'}
+              {isLoading ? (
+                <>
+                  <span className="spinner"></span>
+                  <span>PROCESSING...</span>
+                </>
+              ) : (
+                quizCompleted ? 'GO TO LEVEL 2' : 'PROCEED TO PAY'
+              )}
             </button>
 
             <div className="security-badge">
