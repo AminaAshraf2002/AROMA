@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { Eye, EyeOff, User, Lock, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 import AOS from 'aos';
@@ -15,10 +16,11 @@ const API_BASE_URL = 'https://aroma-server.onrender.com';
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [loginError, setLoginError] = useState('');
-  const [isGoogleButtonVisible, setIsGoogleButtonVisible] = useState(true);
-  const [showManualSignIn, setShowManualSignIn] = useState(false);
 
   // Initialize AOS and Google Sign-In
   useEffect(() => {
@@ -50,14 +52,6 @@ const LoginPage = () => {
     };
   }, []);
 
-  // Show instructions to reset permissions when needed
-  const showPermissionResetInstructions = () => {
-    setLoginError(
-      'Sign-in prompt was previously dismissed. To enable Google Sign-In, click the lock icon in the address bar and reset the "Third-party sign-in" permission, then refresh the page.'
-    );
-    setShowManualSignIn(true);
-  };
-
   // Initialize Google Sign-In
   const initializeGoogleSignIn = useCallback(() => {
     if (window.google) {
@@ -67,16 +61,8 @@ const LoginPage = () => {
           callback: handleGoogleSignIn,
           auto_select: false,
           cancel_on_tap_outside: true,
-          use_fedcm_for_prompt: true, // Enable FedCM for One Tap
-          use_fedcm_for_button: true, // Enable FedCM for Button
-          context: 'signin', // Explicitly set the context to sign-in
-          ux_mode: 'redirect',
-          login_uri: 'https://aromareserch.com/api/auth/callback/google',
-          itp_support: true,
-          onError: (error) => {
-            console.error('Google Sign-In initialization error:', error);
-            showPermissionResetInstructions();
-          }
+          use_fedcm_for_prompt: true, // Enable FedCM
+          context: 'signin' // Explicitly set the context to sign-in
         });
         
         // Render Google Sign-In button
@@ -89,40 +75,30 @@ const LoginPage = () => {
             shape: 'rectangular',
             text: 'continue_with',
             width: 300,
-            locale: 'en',
-            logo_alignment: 'center'
+            is_fedcm_supported: true // Add FedCM support flag
           }
         );
 
-        // Prompt for sign-in with proper error handling
+        // Update to FedCM compatible prompt handling
         window.google.accounts.id.prompt((notification) => {
-          if (notification) {
-            if (notification.isDisplayMoment && notification.isDisplayMoment()) {
-              console.log('Google Sign-In UI displayed');
-            } else if (notification.isSkippedMoment && notification.isSkippedMoment()) {
-              console.log('Google Sign-In UI skipped');
-              // If skipped or in cooldown period, show instructions to reset
-              showPermissionResetInstructions();
-            } else if (notification.isDismissedMoment && notification.isDismissedMoment()) {
-              console.log('Google Sign-In UI dismissed');
-              // User explicitly dismissed the prompt
-              showPermissionResetInstructions();
-            } else if (notification.isNotDisplayed && notification.isNotDisplayed()) {
-              console.log('Google Sign-In not displayed');
-              // Maybe FedCM is disabled
-              showPermissionResetInstructions();
-            }
+          // Replace isNotDisplayed() with FedCM compatible methods
+          if (notification.isDisplayMoment()) {
+            console.log('Google Sign-In UI displayed');
+          } else if (notification.isSkippedMoment()) {
+            console.log('Google Sign-In UI skipped');
+          } else if (notification.isDismissedMoment()) {
+            console.log('Google Sign-In UI dismissed');
+          } else if (notification.isNotDisplayed) {
+            console.log('Google Sign-In not displayed');
           }
         });
       } catch (error) {
         console.error('Google Sign-In initialization error:', error);
-        setLoginError('Failed to initialize Google Sign-In. Please try again later.');
-        setShowManualSignIn(true);
+        setLoginError('Failed to initialize Google Sign-In');
       }
     } else {
       console.error('Google Sign-In script not loaded');
-      setLoginError('Google Sign-In service unavailable. Please try again later.');
-      setShowManualSignIn(true);
+      setLoginError('Google Sign-In service unavailable');
     }
   }, []);
 
@@ -141,7 +117,7 @@ const LoginPage = () => {
       console.log('Google Sign-In Token received');
       
       // Send token to backend - use full URL
-      const result = await fetch(`${API_BASE_URL}/api/auth/google`, {
+      const result = await fetch(${API_BASE_URL}/api/auth/google, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -177,37 +153,55 @@ const LoginPage = () => {
       }
     } catch (error) {
       console.error('Google sign-in error:', error);
-      setLoginError(error.message || 'An unexpected error occurred during sign-in');
-      setShowManualSignIn(true);
+      setLoginError(error.message || 'An unexpected error occurred');
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Manual sign-in with Google by clicking button
-  const handleManualGoogleSignIn = () => {
-    if (window.google && window.google.accounts && window.google.accounts.id) {
-      try {
-        // Show the Google Sign-In button if hidden
-        setIsGoogleButtonVisible(true);
-        
-        // Force prompt to appear again (user must have reset permissions)
-        window.google.accounts.id.prompt((notification) => {
-          if (notification && notification.isNotDisplayed && notification.isNotDisplayed()) {
-            setLoginError('Please reset the "Third-party sign-in" permission in your browser settings and try again.');
-          }
-        });
-      } catch (error) {
-        console.error('Failed to prompt Google Sign-In:', error);
+  // Standard email login handler
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setLoginError('');
+
+    try {
+      // Send email/password to backend
+      const result = await fetch(${API_BASE_URL}/api/auth/login, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
+      
+      if (!result.ok) {
+        const errorData = await result.text();
+        throw new Error(errorData || 'Login failed');
       }
+      
+      const data = await result.json();
+      
+      if (data.success) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        navigate('/about');
+      } else {
+        throw new Error(data.message || 'Login unsuccessful');
+      }
+    } catch (error) {
+      setLoginError('Login failed. Please check your credentials.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // Help link to explain third-party sign-in settings
-  const handleHelp = () => {
-    window.open('https://support.google.com/chrome/answer/95472', '_blank');
+  // Navigate to registration
+  const handleRegister = () => {
+    navigate('/');
   };
 
+  // Rest of the component remains the same
   return (
     <div className="login-page">
       <div className="background-container">
@@ -236,7 +230,7 @@ const LoginPage = () => {
                     <img src={logo} alt="AROMA Logo" className="card-logo-image" />
                   </div>
                   <h2>Sign In</h2>
-                  <p>Welcome back! Please sign in with Google to continue</p>
+                  <p>Welcome back! Please sign in to continue</p>
                 </div>
                 
                 {/* Error Message */}
@@ -248,36 +242,89 @@ const LoginPage = () => {
                 
                 {/* Google Sign-In Button */}
                 <div className="google-button-container" data-aos="fade-up" data-aos-delay="350">
-                  {isGoogleButtonVisible && <div id="google-signin-button"></div>}
-                  {showManualSignIn && (
-                    <div className="reset-instructions">
-                      <button 
-                        onClick={handleManualGoogleSignIn}
-                        className="submit-button try-again-button"
-                        data-aos="fade-up" 
-                        data-aos-delay="450"
-                      >
-                        Try Google Sign-In Again
-                      </button>
-                      <button 
-                        onClick={handleHelp}
-                        className="help-button"
-                        data-aos="fade-up" 
-                        data-aos-delay="500"
-                      >
-                        Need Help?
-                      </button>
-                    </div>
-                  )}
+                  <div id="google-signin-button"></div>
+                  <div className="or-divider">
+                    <span>or sign in with email</span>
+                  </div>
                 </div>
                 
-                {/* Loading indicator */}
-                {isLoading && (
-                  <div className="loading-indicator" data-aos="fade-up">
-                    <div className="spinner"></div>
-                    <p>Signing in with Google...</p>
+                {/* Email Login Form */}
+                {/* <form onSubmit={handleSubmit} className="login-form">
+                  <div className="input-group" data-aos="fade-up" data-aos-delay="400">
+                    <User className="input-icon" size={18} />
+                    <input
+                      type="email"
+                      placeholder="Email Address"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      className="input-field"
+                    />
                   </div>
-                )}
+                  
+                  <div className="input-group" data-aos="fade-up" data-aos-delay="500">
+                    <Lock className="input-icon" size={18} />
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      className="input-field"
+                    />
+                    <button 
+                      type="button" 
+                      className="toggle-password"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? 
+                        <EyeOff size={18} /> : 
+                        <Eye size={18} />
+                      }
+                    </button>
+                  </div>
+                  
+                  <div className="form-options" data-aos="fade-up" data-aos-delay="600">
+                    <label className="remember-option">
+                      <input type="checkbox" />
+                      <span>Remember me</span>
+                    </label>
+                    <span className="forgot-link">Forgot password?</span>
+                  </div>
+                  
+                  <button 
+                    type="submit" 
+                    className="submit-button"
+                    disabled={isLoading}
+                    data-aos="fade-up" 
+                    data-aos-delay="700"
+                  >
+                    {isLoading ? (
+                      <>
+                        <span className="spinner"></span>
+                        <span>Signing in...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Sign In</span>
+                        <ChevronRight size={18} />
+                      </>
+                    )}
+                  </button>
+                  
+                  <div className="card-footer" data-aos="fade-up" data-aos-delay="800">
+                    <p>
+                     
+                      <button 
+                        type="button" 
+                        onClick={handleRegister} 
+                        className="register-link"
+                      >
+                      
+                      </button>
+                    </p>
+                  </div>
+                </form> */}
               </div>
             </div>
           </div>
