@@ -117,7 +117,7 @@ const LoginPage = () => {
       console.log('Google Sign-In Token received');
       
       // Send token to backend - use full URL
-      const result = await fetch(${API_BASE_URL}/api/auth/google, {
+      const result = await fetch(`${API_BASE_URL}/api/auth/google`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -167,7 +167,7 @@ const LoginPage = () => {
 
     try {
       // Send email/password to backend
-      const result = await fetch(${API_BASE_URL}/api/auth/login, {
+      const result = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -244,87 +244,12 @@ const LoginPage = () => {
                 <div className="google-button-container" data-aos="fade-up" data-aos-delay="350">
                   <div id="google-signin-button"></div>
                   <div className="or-divider">
-                    <span>or sign in with email</span>
+                    <span>Sign in with Google</span>
                   </div>
                 </div>
                 
-                {/* Email Login Form */}
-                {/* <form onSubmit={handleSubmit} className="login-form">
-                  <div className="input-group" data-aos="fade-up" data-aos-delay="400">
-                    <User className="input-icon" size={18} />
-                    <input
-                      type="email"
-                      placeholder="Email Address"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      className="input-field"
-                    />
-                  </div>
-                  
-                  <div className="input-group" data-aos="fade-up" data-aos-delay="500">
-                    <Lock className="input-icon" size={18} />
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      className="input-field"
-                    />
-                    <button 
-                      type="button" 
-                      className="toggle-password"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? 
-                        <EyeOff size={18} /> : 
-                        <Eye size={18} />
-                      }
-                    </button>
-                  </div>
-                  
-                  <div className="form-options" data-aos="fade-up" data-aos-delay="600">
-                    <label className="remember-option">
-                      <input type="checkbox" />
-                      <span>Remember me</span>
-                    </label>
-                    <span className="forgot-link">Forgot password?</span>
-                  </div>
-                  
-                  <button 
-                    type="submit" 
-                    className="submit-button"
-                    disabled={isLoading}
-                    data-aos="fade-up" 
-                    data-aos-delay="700"
-                  >
-                    {isLoading ? (
-                      <>
-                        <span className="spinner"></span>
-                        <span>Signing in...</span>
-                      </>
-                    ) : (
-                      <>
-                        <span>Sign In</span>
-                        <ChevronRight size={18} />
-                      </>
-                    )}
-                  </button>
-                  
-                  <div className="card-footer" data-aos="fade-up" data-aos-delay="800">
-                    <p>
-                     
-                      <button 
-                        type="button" 
-                        onClick={handleRegister} 
-                        className="register-link"
-                      >
-                      
-                      </button>
-                    </p>
-                  </div>
-                </form> */}
+                {/* Email Login Form - Uncommented */}
+               
               </div>
             </div>
           </div>
