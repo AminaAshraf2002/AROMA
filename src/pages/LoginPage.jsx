@@ -21,6 +21,8 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [loginError, setLoginError] = useState('');
+  const [isGoogleButtonVisible, setIsGoogleButtonVisible] = useState(true);
+  const [showManualSignIn, setShowManualSignIn] = useState(false);
 
   // Initialize AOS and Google Sign-In
   useEffect(() => {
@@ -52,6 +54,14 @@ const LoginPage = () => {
     };
   }, []);
 
+  // Show instructions to reset permissions when needed
+  const showPermissionResetInstructions = () => {
+    setLoginError(
+      'Sign-in prompt was previously dismissed. To enable Google Sign-In, click the lock icon in the address bar and reset the "Third-party sign-in" permission, then refresh the page.'
+    );
+    setShowManualSignIn(true);
+  };
+
   // Initialize Google Sign-In
   const initializeGoogleSignIn = useCallback(() => {
     if (window.google) {
@@ -61,8 +71,15 @@ const LoginPage = () => {
           callback: handleGoogleSignIn,
           auto_select: false,
           cancel_on_tap_outside: true,
-          use_fedcm_for_prompt: true, // Enable FedCM
-          context: 'signin' // Explicitly set the context to sign-in
+          use_fedcm_for_prompt: true, // Enable FedCM for One Tap
+          use_fedcm_for_button: true, // Enable FedCM for Button
+          context: 'signin', // Explicitly set the context to sign-in
+          ux_mode: 'popup',
+          itp_support: true,
+          onError: (error) => {
+            console.error('Google Sign-In initialization error:', error);
+            showPermissionResetInstructions();
+          }
         });
         
         // Render Google Sign-In button
@@ -75,30 +92,40 @@ const LoginPage = () => {
             shape: 'rectangular',
             text: 'continue_with',
             width: 300,
-            is_fedcm_supported: true // Add FedCM support flag
+            locale: 'en',
+            logo_alignment: 'center'
           }
         );
 
-        // Update to FedCM compatible prompt handling
+        // Prompt for sign-in with proper error handling
         window.google.accounts.id.prompt((notification) => {
-          // Replace isNotDisplayed() with FedCM compatible methods
-          if (notification.isDisplayMoment()) {
-            console.log('Google Sign-In UI displayed');
-          } else if (notification.isSkippedMoment()) {
-            console.log('Google Sign-In UI skipped');
-          } else if (notification.isDismissedMoment()) {
-            console.log('Google Sign-In UI dismissed');
-          } else if (notification.isNotDisplayed) {
-            console.log('Google Sign-In not displayed');
+          if (notification) {
+            if (notification.isDisplayMoment && notification.isDisplayMoment()) {
+              console.log('Google Sign-In UI displayed');
+            } else if (notification.isSkippedMoment && notification.isSkippedMoment()) {
+              console.log('Google Sign-In UI skipped');
+              // If skipped or in cooldown period, show instructions to reset
+              showPermissionResetInstructions();
+            } else if (notification.isDismissedMoment && notification.isDismissedMoment()) {
+              console.log('Google Sign-In UI dismissed');
+              // User explicitly dismissed the prompt
+              showPermissionResetInstructions();
+            } else if (notification.isNotDisplayed && notification.isNotDisplayed()) {
+              console.log('Google Sign-In not displayed');
+              // Maybe FedCM is disabled
+              showPermissionResetInstructions();
+            }
           }
         });
       } catch (error) {
         console.error('Google Sign-In initialization error:', error);
-        setLoginError('Failed to initialize Google Sign-In');
+        setLoginError('Failed to initialize Google Sign-In. Please try again later.');
+        setShowManualSignIn(true);
       }
     } else {
       console.error('Google Sign-In script not loaded');
-      setLoginError('Google Sign-In service unavailable');
+      setLoginError('Google Sign-In service unavailable. Please try again later.');
+      setShowManualSignIn(true);
     }
   }, []);
 
@@ -153,7 +180,8 @@ const LoginPage = () => {
       }
     } catch (error) {
       console.error('Google sign-in error:', error);
-      setLoginError(error.message || 'An unexpected error occurred');
+      setLoginError(error.message || 'An unexpected error occurred during sign-in');
+      setShowManualSignIn(true);
     } finally {
       setIsLoading(false);
     }
@@ -201,6 +229,25 @@ const LoginPage = () => {
     navigate('/');
   };
 
+  // Manual sign-in with Google by clicking button
+  const handleManualGoogleSignIn = () => {
+    if (window.google && window.google.accounts && window.google.accounts.id) {
+      try {
+        // Show the Google Sign-In button if hidden
+        setIsGoogleButtonVisible(true);
+        
+        // Force prompt to appear again (user must have reset permissions)
+        window.google.accounts.id.prompt((notification) => {
+          if (notification && notification.isNotDisplayed && notification.isNotDisplayed()) {
+            setLoginError('Please reset the "Third-party sign-in" permission in your browser settings and try again.');
+          }
+        });
+      } catch (error) {
+        console.error('Failed to prompt Google Sign-In:', error);
+      }
+    }
+  };
+
   // Rest of the component remains the same
   return (
     <div className="login-page">
@@ -242,14 +289,24 @@ const LoginPage = () => {
                 
                 {/* Google Sign-In Button */}
                 <div className="google-button-container" data-aos="fade-up" data-aos-delay="350">
-                  <div id="google-signin-button"></div>
+                  {isGoogleButtonVisible && <div id="google-signin-button"></div>}
+                  {showManualSignIn && (
+                    <button 
+                      onClick={handleManualGoogleSignIn}
+                      className="manual-google-signin"
+                      data-aos="fade-up" 
+                      data-aos-delay="450"
+                    >
+                      Try Google Sign-In Again
+                    </button>
+                  )}
                   <div className="or-divider">
                     <span>or sign in with email</span>
                   </div>
                 </div>
                 
                 {/* Email Login Form */}
-                {/* <form onSubmit={handleSubmit} className="login-form">
+                <form onSubmit={handleSubmit} className="login-form">
                   <div className="input-group" data-aos="fade-up" data-aos-delay="400">
                     <User className="input-icon" size={18} />
                     <input
@@ -314,17 +371,16 @@ const LoginPage = () => {
                   
                   <div className="card-footer" data-aos="fade-up" data-aos-delay="800">
                     <p>
-                     
                       <button 
                         type="button" 
                         onClick={handleRegister} 
                         className="register-link"
                       >
-                      
+                        Create an account
                       </button>
                     </p>
                   </div>
-                </form> */}
+                </form>
               </div>
             </div>
           </div>
