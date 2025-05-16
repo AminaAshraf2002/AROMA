@@ -590,15 +590,9 @@
     padding: 12px 20px;
   }
   
-  .logo-image {
-    width: 35px;
-    height: 35px;
-  }
+
   
-  .logo-text {
-    font-size: 16px;
-  }
-  
+
   .certificate-content {
     padding: 20px 15px;
   }
@@ -624,10 +618,11 @@
   .template-exact {
     padding: 30px 40px;
   }
-  
+ 
   .certificate-level {
-    font-size: 18px;
-    margin-bottom: 15px;
+    font-size: 15px;
+    margin-bottom: 8px;
+   
   }
   
   .certificate-completed-text {
@@ -635,13 +630,17 @@
   }
   
   .certificate-username {
-    font-size: 24px;
+    font-size: 20px;
     margin: 8px 0 15px;
     padding-bottom: 12px;
+    margin-bottom: -10px;
+    margin-top: -5px;
+    
   }
   
   .with-score-text {
-    font-size: 16px;
+    font-size: 14px;
+    margin-top: -20px;
   }
   
   .certificate-score-percentage {
@@ -871,7 +870,9 @@
   
   .certificate-level {
     font-size: 14px;
-    margin-bottom: 10px;
+  
+    margin-top: 10px;
+
   }
   
   .certificate-completed-text {
@@ -889,11 +890,13 @@
   }
   
   .with-score-text {
-    font-size: 13px;
+    font-size: 12px;
+     margin-top: -50px;
   }
   
   .certificate-score-percentage {
     font-size: 18px;
+   
   }
   
   .signatures-section {
@@ -989,12 +992,18 @@
 
 /* For very small screens */
 @media (max-width: 360px) {
+  .certificate-info{
+   
+  }
   .certificate-level {
-    font-size: 13px;
+    font-size: 11px;
+    margin-top: 18px;
+    
   }
   
   .certificate-completed-text {
-    font-size: 12px;
+    font-size: 10px;
+    
   }
   
   .certificate-username {
@@ -1002,11 +1011,11 @@
   }
   
   .certificate-date {
-    font-size: 12px;
+    font-size: 10px;
   }
   
   .with-score-text {
-    font-size: 12px;
+    font-size: 10px;
   }
   
   .certificate-score-percentage {

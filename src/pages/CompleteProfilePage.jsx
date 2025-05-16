@@ -15,7 +15,7 @@ const CompleteProfilePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     // Check if token exists, if not redirect to login
     const token = localStorage.getItem('token');
@@ -23,18 +23,18 @@ const CompleteProfilePage = () => {
       navigate('/');
     }
   }, [navigate]);
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
-    
+
     try {
       // Get token from localStorage
       const token = localStorage.getItem('token');
       console.log('Sending profile update with token:', token ? token.substring(0, 10) + '...' : 'None');
       console.log('Country code:', countryCode);
-      
+
       // Send country code to backend with the correct URL
       const response = await fetch(`${API_BASE_URL}/api/auth/complete-profile`, {
         method: 'POST',
@@ -44,11 +44,11 @@ const CompleteProfilePage = () => {
         },
         body: JSON.stringify({ countryCode })
       });
-      
+
       // Try to get response text regardless of status
       const responseText = await response.text();
       console.log('Response text:', responseText);
-      
+
       // Try to parse as JSON if possible
       let data;
       try {
@@ -57,16 +57,16 @@ const CompleteProfilePage = () => {
         console.error('Failed to parse response as JSON:', e);
         throw new Error(`Server response was not valid JSON: ${responseText}`);
       }
-      
+
       if (!response.ok) {
         throw new Error(`Server responded with status: ${response.status}${data ? ` - ${data.message || ''}` : ''}`);
       }
-      
+
       // If we got here, we successfully parsed the response
       if (data.success) {
         // Store updated user data in localStorage
         localStorage.setItem('user', JSON.stringify(data.user));
-        
+
         // Navigate to main page after profile completion
         navigate('/about');
       } else {
@@ -80,7 +80,7 @@ const CompleteProfilePage = () => {
       setIsLoading(false);
     }
   };
-  
+
   return (
     <div className="country-page">
       {/* Background like login page */}
@@ -88,7 +88,7 @@ const CompleteProfilePage = () => {
         <img src={backgroundImg} alt="" className="country-bg-image" />
         <div className="country-overlay"></div>
       </div>
-      
+
       <div className="country-content">
         <div className="country-card-container">
           <div className="country-card">
@@ -99,9 +99,9 @@ const CompleteProfilePage = () => {
               <h2>Complete Your Profile</h2>
               <p>Please select your country to continue</p>
             </div>
-            
+
             {error && <div className="country-error">{error}</div>}
-            
+
             <form onSubmit={handleSubmit} className="country-form">
               <div className="country-input-group">
                 <MapPin className="country-input-icon" size={18} />
@@ -126,11 +126,13 @@ const CompleteProfilePage = () => {
                   <option value="ZA">South Africa</option>
                   <option value="IT">Italy</option>
                   <option value="MX">Mexico</option>
+                  <option value="SA">Saudi Arabia</option>
+                  <option value="ID">Indonesia</option>
                 </select>
               </div>
-              
-              <button 
-                type="submit" 
+
+              <button
+                type="submit"
                 className="country-submit-button"
                 disabled={isLoading}
               >
@@ -147,7 +149,7 @@ const CompleteProfilePage = () => {
                 )}
               </button>
             </form>
-            
+
             <div className="country-note">
               <p>This helps us provide location-specific content for your perfumery journey</p>
             </div>

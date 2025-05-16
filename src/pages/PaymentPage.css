@@ -623,3 +623,85 @@ input[type="text"]:focus {
     font-size: 14px;
   }
 }
+* CSS for the discount and coupon badge */
+
+/* Discount row styling */
+.price-row.discount {
+  color: #e64a19;
+  font-weight: 500;
+}
+
+.discount-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.discount-icon {
+  color: #e64a19;
+}
+
+.discount-value {
+  color: #e64a19;
+  font-weight: 600;
+}
+
+/* Coupon badge styling */
+.coupon-badge {
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+  color: #856404;
+  border-radius: 4px;
+  padding: 8px 12px;
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 500;
+  animation: pulse 1.5s infinite;
+}
+
+.coupon-badge svg {
+  color: #e64a19;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(230, 74, 25, 0.2);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(230, 74, 25, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(230, 74, 25, 0);
+  }
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .coupon-badge {
+    padding: 6px 10px;
+    font-size: 14px;
+  }
+  
+  .price-details {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .coupon-badge {
+    padding: 5px 8px;
+    font-size: 13px;
+    margin-top: 12px;
+  }
+  
+  .discount-label {
+    gap: 4px;
+  }
+  
+  .price-details {
+    font-size: 13px;
+  }
+}
