@@ -779,6 +779,7 @@
   .retry-button {
     padding: 10px 20px;
     font-size: 14px;
+    margin-left: 20px;
   }
   
   .certificate-content-overlay {
@@ -958,6 +959,7 @@
     width: 100%;
     max-width: 220px;
     justify-content: center;
+    margin-left: 70px;
   }
   .certificate-username {
     font-size: 13px;
